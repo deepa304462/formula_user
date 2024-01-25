@@ -1,0 +1,76 @@
+{
+  "project_info": {
+    "project_number": "735367481552",
+    "project_id": "formula-f5df4",
+    "storage_bucket": "formula-f5df4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:735367481552:android:cdeebdb5f52bc4b875b6d5",
+        "android_client_info": {
+          "package_name": "com.example.formula_user"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "735367481552-tiq0nqu2eic0osqh1g01umgje2eddcok.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhcEMZ_oGAay0Z6u1iVZgg6eaRDzc1zAM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "735367481552-tiq0nqu2eic0osqh1g01umgje2eddcok.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:735367481552:android:45cbf259019cf9ff75b6d5",
+        "android_client_info": {
+          "package_name": "com.physics.formula_admin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "735367481552-benq8ae1drnpr0epia16oral0s5idu5v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.physics.formula_admin",
+            "certificate_hash": "b5e19fa2143cf40d46402ba92c95651b56e329c3"
+          }
+        },
+        {
+          "client_id": "735367481552-tiq0nqu2eic0osqh1g01umgje2eddcok.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhcEMZ_oGAay0Z6u1iVZgg6eaRDzc1zAM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "735367481552-tiq0nqu2eic0osqh1g01umgje2eddcok.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
