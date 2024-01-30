@@ -1,0 +1,211 @@
+import 'dart:io';
+import 'dart:typed_data';
+import 'dart:ui'as ui;
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:formula_user/models/content_item_model.dart';
+import 'package:formula_user/res/db_helper.dart';
+import 'package:image/image.dart' as img;
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
+
+import '../../models/favorite_model.dart';
+import '../../res/colours.dart';
+import '../../res/styles.dart';
+import '../../utilities.dart';
+import '../detailed_formula_screen.dart';
+
+
+class ContentListItem extends StatefulWidget {
+  ContentItemModel contentItemModel;
+  DBHelper? dbHelper;
+  ContentListItem(this.contentItemModel, this.dbHelper);
+
+
+
+  @override
+  State<ContentListItem> createState() => _ContentListItemState();
+}
+
+
+
+class _ContentListItemState extends State<ContentListItem> {
+  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  bool isInBookmark = false;
+  @override
+  void initState() {
+    super.initState();
+   checkIfBookMark();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RepaintBoundary(
+      key: scaffoldKey,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Colours.buttonColor1,
+                      Colours.buttonColor2,
+                    ],
+                  ),
+                  borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(16),
+                      topRight: Radius.circular(16))),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Flexible(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: Center(
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                  textAlign: TextAlign.center,
+                                  maxLines: 5,
+                                  widget.contentItemModel.title,
+                                  style:
+                                  Styles.textWith18withBold(Colours.white)),
+                            ),
+                            IconButton(
+                                onPressed: (){
+                                  if(isInBookmark){
+                                  widget.dbHelper!.deleteFromFavorite(widget.contentItemModel.id);
+                                  setState(() {
+                                    isInBookmark = false;
+                                  });
+                                  }else{
+                                    widget.dbHelper!.insert(
+                                        FavoriteModel(
+                                            id: widget.contentItemModel.id,
+                                            title: widget.contentItemModel.title,
+                                            image: widget.contentItemModel.imageUrl,
+                                            pdf: widget.contentItemModel.pdfUrl
+                                        )).then((value){
+                                      setState(() {
+                                        isInBookmark = true;
+                                      });
+                                    }).onError((error, stackTrace){
+                                      print(error.toString());
+                                    });
+                                  }
+
+
+                                },
+                                icon:  isInBookmark ? Icon(Icons.favorite):Icon(Icons.favorite_border),
+                                color: isInBookmark ? Colours.red900 : Colours.white ),
+                            IconButton(
+                                onPressed: (){
+                                  SchedulerBinding.instance.addPostFrameCallback((_) {
+                                    checkDebugPaint();
+                                  });
+                                },
+                                icon: const Icon(Icons.share),
+                                color: Colours.white),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+                decoration: BoxDecoration(
+                    border: Border.all(color: Colors.indigo, width: 1),
+                    borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(16),
+                        bottomRight: Radius.circular(16))
+                  // borderRadius: BorderRadius.circular(16)
+                ),
+                child: ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                        bottomRight: Radius.circular(16),
+                        bottomLeft: Radius.circular(16)),
+                    child: GestureDetector(
+                        onTap: (){
+                          pushToNewRoute(context,  DetailedFormulaScreen(widget.contentItemModel.imageUrl,widget.contentItemModel.pdfUrl));
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colours.white
+                          ),
+                            child: Image.network(widget.contentItemModel.imageUrl)))))
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<Uint8List> captureScreenshot(GlobalKey<State<StatefulWidget>> key) async {
+    RenderRepaintBoundary boundary = key.currentContext!.findRenderObject() as RenderRepaintBoundary;
+    ui.Image image = await boundary.toImage(pixelRatio: 1.0,);
+    ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+    Uint8List uint8List = byteData!.buffer.asUint8List();
+    return uint8List;
+  }
+
+  Uint8List addWatermark(Uint8List imageBytes, String watermarkText) {
+    img.Image image = img.decodeImage(imageBytes)!;
+    img.drawString(image,watermarkText,font: img.arial24,color:img.ColorFloat16.rgb(150, 150, 150));
+    return Uint8List.fromList(img.encodePng(image));
+  }
+
+  checkDebugPaint() async {
+    var debugNeedsPaint = false;
+
+    RenderRepaintBoundary boundary = RenderRepaintBoundary();
+    if (kDebugMode) debugNeedsPaint = boundary.debugNeedsPaint;
+
+    if (debugNeedsPaint) {
+      print("Waiting for boundary to be painted.");
+      await Future.delayed(const Duration(milliseconds: 20));
+      return captureModifyAndShare(scaffoldKey);
+    }
+  }
+
+  void captureModifyAndShare(GlobalKey<State<StatefulWidget>> key) async {
+
+    try {
+      RenderRepaintBoundary boundary = key.currentContext!.findRenderObject() as RenderRepaintBoundary;
+      ui.Image capturedImage = await boundary.toImage(pixelRatio: 1);
+      ByteData? byteData = await capturedImage.toByteData(format: ui.ImageByteFormat.png);
+      GlobalKey<ScaffoldState> scaffoldKey = key as GlobalKey<ScaffoldState>;
+      Uint8List originalImage = await captureScreenshot(scaffoldKey);
+      Uint8List modifiedImage = addWatermark(originalImage, "Formula");
+      String imagePath = await saveImageLocally(modifiedImage);
+      await Share.shareFiles([imagePath], text: 'formula of ${widget.contentItemModel.title}');
+    } catch (e) {
+      print('Error capturing or sharing screenshot: $e');
+    }
+  }
+
+  Future<String> saveImageLocally(Uint8List imageBytes) async {
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    String imagePath = "${appDocDir.path}/screenshot.png";
+    File(imagePath).writeAsBytesSync(imageBytes);
+    return imagePath;
+  }
+
+  Future<void> checkIfBookMark() async {
+    // Wait for the result before setting the icon color
+    isInBookmark = (await widget.dbHelper?.isInBookMark(widget.contentItemModel.id))!;
+
+    // Set the icon color based on the result
+    setState(() {});
+  }
+}

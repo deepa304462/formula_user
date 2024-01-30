@@ -9,7 +9,7 @@ import '../res/colours.dart';
 import '../res/styles.dart';
 import '../utilities.dart';
 import 'no_use/add_content_item_screen.dart';
-import 'content_item_list.dart';
+import 'content_list.dart';
 import 'no_use/edit_content.dart';
 
 class SubjectDetail extends StatefulWidget {
@@ -87,7 +87,7 @@ class _SubjectDetailState extends State<SubjectDetail> {
                   },
                   body: Padding(
                     padding: const EdgeInsets.only(left: 12,right: 12),
-                    child: ContentItemList(item),
+                    child: ContentList(item),
                   ),
                   isExpanded: item.isExpanded,
                 );

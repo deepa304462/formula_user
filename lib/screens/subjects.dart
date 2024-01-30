@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:formula_user/screens/content_item_list.dart';
+import 'package:formula_user/screens/content_list.dart';
 import 'package:formula_user/screens/subject_detail_screen.dart';
 import 'package:formula_user/screens/tab_contents.dart';
 import 'package:formula_user/utilities.dart';

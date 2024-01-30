@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../res/colours.dart';
 import '../res/styles.dart';
@@ -6,7 +8,8 @@ import '../res/styles.dart';
 
 class DetailedFormulaScreen extends StatefulWidget {
   String imageUrl;
-  DetailedFormulaScreen(this.imageUrl, {super.key});
+  String pdfUrl;
+  DetailedFormulaScreen(this.imageUrl,this.pdfUrl, {super.key});
 
   @override
   State<DetailedFormulaScreen> createState() => _DetailedFormulaScreenState();
@@ -65,23 +68,22 @@ class _DetailedFormulaScreenState extends State<DetailedFormulaScreen> with Sing
       body:  TabBarView(
         controller: _tabController,
         children:  [
-          Container(
-              decoration: BoxDecoration(
-                  border: Border.all(color: Colors.indigo, width: 1),
-                  borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(16),
-                      bottomRight: Radius.circular(16))
-                // borderRadius: BorderRadius.circular(16)
-              ),
-              child: ClipRRect(
-                  borderRadius: const BorderRadius.only(
-                      bottomRight: Radius.circular(16),
-                      bottomLeft: Radius.circular(16)),
-                  child: GestureDetector(
-                      child: Image.network(widget.imageUrl,)))),
-          Center(
-            child: Text('Screen for Tab 2'),
-          ),
+          ClipRRect(
+              borderRadius: const BorderRadius.only(
+                  bottomRight: Radius.circular(16),
+                  bottomLeft: Radius.circular(16)),
+              child: GestureDetector(
+                  child: Image.network(widget.imageUrl,))),
+          ClipRRect(
+              borderRadius: const BorderRadius.only(
+                  bottomRight: Radius.circular(16),
+                  bottomLeft: Radius.circular(16)),
+              child: GestureDetector(
+                  child: widget.pdfUrl.isNotEmpty ? PDFView(filePath: widget.pdfUrl, autoSpacing: true,
+                    pageFling: true,):  Center(child: Text("Solution not available for this formula",style: Styles.textWith18withBold500(Colours.black)),))),
+
+
+
         ],
       ),
     );

@@ -34,7 +34,7 @@ class DBHelper{
 
   _onCreate(Database db, int version) async {
     await db.execute(
-      "CREATE TABLE favorites (id TEXT PRIMARY KEY, title TEXT NOT NULL, image IMAGE NOT NULL) "
+      "CREATE TABLE favorites (id TEXT PRIMARY KEY, title TEXT NOT NULL, image IMAGE NOT NULL, pdf TEXT NOT NULL) "
     );
   }
 
@@ -52,4 +52,32 @@ class DBHelper{
 
     return queryResult.map((e) => FavoriteModel.fromMap(e)).toList();
   }
+
+  Future<bool> isInBookMark(String itemId) async {
+    var dbClient = await db;
+    final List<Map<String, dynamic>> queryResult = await dbClient!.query(
+      'favorites',
+      where: "id = ?",
+      whereArgs: [itemId], // Pass the itemId as a parameter
+    );
+
+    // Check if the query result is not empty
+    return queryResult.isNotEmpty;
+  }
+
+  Future<void> deleteFromFavorite(String id) async {
+
+    var dbClient = await db;
+
+
+    await dbClient!.delete(
+      'favorites',
+
+      where: 'id = ?',
+
+      whereArgs: [id],
+    );
+  }
+
+
 }

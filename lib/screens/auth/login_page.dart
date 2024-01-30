@@ -7,6 +7,7 @@ import 'package:lottie/lottie.dart';
 
 import '../../res/colours.dart';
 import '../../utilities.dart';
+import '../bottom_navigation.dart';
 import '../home_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -59,27 +60,6 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
-  }
-
-
-  void SignInWithGoogle()async {
-    GoogleSignInAccount? googleUser = await GoogleSignIn(scopes: [
-      '//www.googleapis.com/auth/drive',
-    ],).signIn();
-
-    GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
-    
-    AuthCredential credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken:googleAuth?.idToken,
-    );
-
-   UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
-   print(userCredential.user?.displayName);
-   if(context.mounted){
-     pushToNewRouteAndClearAll(context, const HomePage());
-   }
-
   }
 
 
@@ -144,6 +124,9 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {
       _isLoading = false;
     });
-   // LOGIN SUCCES
+    storeToSharedPreference(true);
+    if(context.mounted){
+      pushToNewRouteAndClearAll(context, const MyBottomNavigation());
+    }
   }
 }
