@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:formula_user/res/db_helper.dart';
 import '../models/content_item_model.dart';
 import '../models/content_model.dart';
+import '../res/ads.dart';
 import 'list_items/content_list_item.dart';
 
 class ContentList extends StatefulWidget {
@@ -28,11 +29,6 @@ class _ContentListState extends State<ContentList> {
     super.initState();
 
   }
-
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +60,8 @@ class _ContentListState extends State<ContentList> {
       }
       list.sort((a, b) => a.index.compareTo(b.index));
 
+
+      //list.insert(2, BannerAdWidget());
       setState(() {
         print("list.length: ${list.length}");
       });

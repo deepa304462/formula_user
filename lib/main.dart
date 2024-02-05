@@ -7,6 +7,7 @@ import 'package:formula_user/screens/auth/login_page.dart';
 import 'package:formula_user/screens/bottom_navigation.dart';
 import 'package:formula_user/screens/home_page.dart';
 import 'package:formula_user/utilities.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,6 +20,7 @@ Future main() async {
           projectId: "com.physics.formula_admin",
       ),
   );
+  MobileAds.instance.initialize();
   runApp(   MaterialApp(
     debugShowCheckedModeBanner: false,
     home: SplashScreen(),
@@ -34,6 +36,7 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+
   
   @override
   void initState() {
@@ -59,7 +62,7 @@ class _SplashScreenState extends State<SplashScreen> {
     if(isLoggedIn ?? false){
       pushToNewRouteAndClearAll(context, MyBottomNavigation());
     }else{
-      pushToNewRouteAndClearAll(context, LoginPage());
+      pushToNewRouteAndClearAll(context, MyBottomNavigation());
     }
 
   }

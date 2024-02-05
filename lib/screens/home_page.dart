@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +8,7 @@ import 'package:formula_user/res/db_helper.dart';
 import 'package:formula_user/res/styles.dart';
 import 'package:formula_user/screens/search_bar_screen.dart';
 import 'package:formula_user/screens/tab_contents.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../models/tab_model.dart';
 import '../res/colours.dart';
@@ -20,6 +24,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
+
+   String testDevice = 'YOUR_DEVICE_ID';
+   int maxFailedLoadAttempts = 3;
   final db = FirebaseFirestore.instance;
   List<TabModel> list = [];
 
@@ -30,6 +37,9 @@ class _HomePageState extends State<HomePage>
   void initState() {
     super.initState();
     getData();// Start fetching data
+    MobileAds.instance.updateRequestConfiguration(
+        RequestConfiguration(testDeviceIds: [testDevice]));
+
   }
 
   Future<void> getData() async {
@@ -83,7 +93,7 @@ class _HomePageState extends State<HomePage>
       ),
       body: DefaultTabController(
           length: list.length,
-          child: _isLoading?Center(child: CircularProgressIndicator(),):NestedScrollView(
+          child: _isLoading?const Center(child: CircularProgressIndicator(),):NestedScrollView(
               headerSliverBuilder: (context, value) {
                 return [
                   SliverAppBar(
@@ -144,7 +154,7 @@ class _HomePageState extends State<HomePage>
                   : DefaultTabController(
                       length: list.length, // length of tabs
                       initialIndex: 0,
-                      child:_isLoading?Center(child: CircularProgressIndicator(),): TabBarView(
+                      child:_isLoading?const Center(child: CircularProgressIndicator(),): TabBarView(
                         controller: _tabController,
                         children: List.generate(
                             list.length,
@@ -168,4 +178,6 @@ class _HomePageState extends State<HomePage>
       pushToNewRouteAndClearAll(context, const LoginPage());
     }
   }
+
+
 }

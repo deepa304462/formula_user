@@ -6,10 +6,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:formula_user/models/content_item_model.dart';
 import 'package:formula_user/res/db_helper.dart';
 import 'package:image/image.dart' as img;
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../models/favorite_model.dart';
@@ -111,7 +113,7 @@ class _ContentListItemState extends State<ContentListItem> {
                             IconButton(
                                 onPressed: (){
                                   SchedulerBinding.instance.addPostFrameCallback((_) {
-                                    checkDebugPaint();
+                                    requestStoragePermission();
                                   });
                                 },
                                 icon: const Icon(Icons.share),
@@ -161,9 +163,12 @@ class _ContentListItemState extends State<ContentListItem> {
 
   Uint8List addWatermark(Uint8List imageBytes, String watermarkText) {
     img.Image image = img.decodeImage(imageBytes)!;
-    img.drawString(image,watermarkText,font: img.arial24,color:img.ColorFloat16.rgb(150, 150, 150));
+    print('Image dimensions before adding watermark: ${image.width} x ${image.height}');
+    img.drawString(image, watermarkText, font: img.arial24, color: img.ColorRgb8(129, 133, 137));
+    print('Image dimensions after adding watermark: ${image.width} x ${image.height}');
     return Uint8List.fromList(img.encodePng(image));
   }
+
 
   checkDebugPaint() async {
     var debugNeedsPaint = false;
@@ -179,14 +184,21 @@ class _ContentListItemState extends State<ContentListItem> {
   }
 
   void captureModifyAndShare(GlobalKey<State<StatefulWidget>> key) async {
-
     try {
       RenderRepaintBoundary boundary = key.currentContext!.findRenderObject() as RenderRepaintBoundary;
       ui.Image capturedImage = await boundary.toImage(pixelRatio: 1);
       ByteData? byteData = await capturedImage.toByteData(format: ui.ImageByteFormat.png);
       GlobalKey<ScaffoldState> scaffoldKey = key as GlobalKey<ScaffoldState>;
       Uint8List originalImage = await captureScreenshot(scaffoldKey);
+
+      // Debug prints
+      print('Original Image dimensions: ${originalImage.length}');
+
       Uint8List modifiedImage = addWatermark(originalImage, "Formula");
+
+      // Debug prints
+      print('Modified Image dimensions: ${modifiedImage.length}');
+
       String imagePath = await saveImageLocally(modifiedImage);
       await Share.shareFiles([imagePath], text: 'formula of ${widget.contentItemModel.title}');
     } catch (e) {
@@ -208,4 +220,39 @@ class _ContentListItemState extends State<ContentListItem> {
     // Set the icon color based on the result
     setState(() {});
   }
+
+  void requestStoragePermission() async {
+
+    var status = await Permission.mediaLibrary.request();
+    var status2 = await Permission.storage.request();
+    if (status.isGranted || status2.isGranted ) {
+      checkDebugPaint();
+      print("Storage permission granted");
+    } else if (status.isDenied || status2.isGranted) {
+      Fluttertoast.showToast(
+        msg: "Storage permission denied please grant permission to share",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.TOP,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.grey,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+      print("Storage permission denied");
+    } else if (status.isPermanentlyDenied || status2.isGranted ) {
+      Fluttertoast.showToast(
+        msg: "Storage permission permanently denied",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.TOP,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.grey,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+      print("Storage permission permanently denied");
+      openAppSettings();
+    }
+  }
+
+
 }

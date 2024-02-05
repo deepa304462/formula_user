@@ -54,6 +54,11 @@ dependencies:
   image: ^4.1.4
   share_plus: ^7.2.1
   shared_preferences: ^2.2.2
+  permission_handler: ^11.2.0
+  fluttertoast: ^8.2.4
+  device_info: ^2.0.3
+  google_mobile_ads: ^4.0.0
+  flutter_fgbg: ^0.3.0
 
 
 dev_dependencies:
