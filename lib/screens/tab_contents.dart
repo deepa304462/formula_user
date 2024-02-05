@@ -54,6 +54,7 @@ class _TabContentsState extends State<TabContents> {
               elevation: 1,
               expandedHeaderPadding: const EdgeInsets.all(0),
               expansionCallback: (int index, bool isExpanded) {
+
                 setState(() {
                   list[index].isExpanded = isExpanded;
                 });
@@ -111,6 +112,7 @@ class _TabContentsState extends State<TabContents> {
       print('Before sorting: $list');
 
       list.sort((a, b) => a.index.compareTo(b.index));
+
 
       // Debugging: Print contents of list after sorting
       print('After sorting: $list');

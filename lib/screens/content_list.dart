@@ -37,6 +37,14 @@ class _ContentListState extends State<ContentList> {
         physics: const NeverScrollableScrollPhysics(),
         itemCount: list.length,
         itemBuilder: (BuildContext context, int index) {
+          if (index % 4 == 3) {
+            // Insert your BannerAdWidget here
+            return BannerAdWidget(); // Change this to the actual widget you want to insert
+          } else {
+            // Adjusted index to account for the inserted widgets
+            final adjustedIndex = index - (index ~/ 4);
+            return ContentListItem(list[adjustedIndex], dbHelper);
+          }
           return ContentListItem(list[index],dbHelper);
         });
   }
