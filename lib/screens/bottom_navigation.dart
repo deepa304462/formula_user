@@ -9,7 +9,7 @@ import '../res/styles.dart';
 import 'home_page.dart';
 
 class MyBottomNavigation extends StatefulWidget {
-  const MyBottomNavigation({super.key});
+  MyBottomNavigation({super.key});
 
   @override
   State<MyBottomNavigation> createState() => _MyBottomNavigationState();

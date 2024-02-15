@@ -58,8 +58,9 @@ class _ContentListItemState extends State<ContentListItem> {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      Colours.buttonColor1,
                       Colours.buttonColor2,
+                      Colours.buttonColor2,
+                      Colours.buttonColor1,
                     ],
                   ),
                   borderRadius: const BorderRadius.only(
@@ -109,7 +110,7 @@ class _ContentListItemState extends State<ContentListItem> {
 
                                 },
                                 icon:  isInBookmark ? Icon(Icons.favorite):Icon(Icons.favorite_border),
-                                color: isInBookmark ? Colours.red900 : Colours.white ),
+                                color: isInBookmark ? Colours.white : Colours.white ),
                             IconButton(
                                 onPressed: (){
                                   SchedulerBinding.instance.addPostFrameCallback((_) {

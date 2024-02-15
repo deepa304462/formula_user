@@ -37,7 +37,7 @@ class _SubjectDetailState extends State<SubjectDetail> {
       appBar:AppBar(
         elevation: 10,
         toolbarHeight: 40,
-        title: Text("Chapters",
+        title: Text(widget.currentTab.name,
             style: Styles.textWith18withBold(Colours.white)),
         backgroundColor: Colours.appbar,
         iconTheme: IconThemeData(

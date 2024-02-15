@@ -4,8 +4,10 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:formula_user/models/user_model.dart';
 import 'package:formula_user/res/db_helper.dart';
 import 'package:formula_user/res/styles.dart';
+import 'package:formula_user/screens/prime_member.dart';
 import 'package:formula_user/screens/search_bar_screen.dart';
 import 'package:formula_user/screens/tab_contents.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -84,11 +86,18 @@ class _HomePageState extends State<HomePage>
         backgroundColor: Colours.appbar,
         actions: [
           IconButton(
+            icon: Image.asset('assets/prime.png',color: Colors.white,),
+            onPressed: () {
+              pushToNewRoute(context, BecomePrimeMember());
+            },
+          ),
+          IconButton(
             icon: Icon(Icons.logout, color: Colours.white),
             onPressed: () {
               _signOut();
             },
           ),
+
         ],
       ),
       body: DefaultTabController(
@@ -180,4 +189,7 @@ class _HomePageState extends State<HomePage>
   }
 
 
-}
+   }
+
+
+

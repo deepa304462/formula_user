@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -5,6 +6,7 @@ import 'package:formula_user/res/styles.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:lottie/lottie.dart';
 
+import '../../models/user_model.dart';
 import '../../res/colours.dart';
 import '../../utilities.dart';
 import '../bottom_navigation.dart';
@@ -76,19 +78,20 @@ class _LoginPageState extends State<LoginPage> {
     GoogleSignIn(scopes: scopes, signInOption: SignInOption.standard);
     currentUser = await googleSignIn.signIn();
     if (currentUser == null) {
+      // ignore: use_build_context_synchronously
       return showDialog(
         context: context,
         builder:(context) {
           return AlertDialog(
-            title: Text('Alert!'),
-            content: Text('Somthing went wrong'),
+            title: const Text('Alert!'),
+            content: const Text('Somthing went wrong'),
             actions: [
               TextButton(
                 onPressed: () {
                   // Close the AlertDialog
                   Navigator.of(context).pop();
                 },
-                child: Text('OK'),
+                child: const Text('OK'),
               ),
             ],
           );
@@ -111,22 +114,48 @@ class _LoginPageState extends State<LoginPage> {
     String? email = profile?['email'];
     bool? verifiedEmail = profile?['verified_email'];
     // String? grantedScopes = profile?['granted_scopes'];
-    Map<String, dynamic> body = {
-      'id': id,
-      'email': email,
-      'verified_email': verifiedEmail,
-      'name': name,
-      'given_name': givenName,
-      'family_name': familyName,
-      'picture': picture,
-      'locale': locale
-    };
+    if(!await userExists(UserModel(
+        id: userCredentials.user?.uid ?? "",
+        name: name ?? "",
+        email: email ?? "",
+        isPrimeMember: false))){
+      addUserToFirebase(
+          UserModel(
+              id: userCredentials.user?.uid ?? "",
+              name: name ?? "",
+              email: email ?? "",
+              isPrimeMember: false)
+
+      );
+    }
+
     setState(() {
       _isLoading = false;
     });
     storeToSharedPreference(true);
     if(context.mounted){
-      pushToNewRouteAndClearAll(context, const MyBottomNavigation());
+      pushToNewRouteAndClearAll(context,  MyBottomNavigation());
+    }
+  }
+
+  Future<void> addUserToFirebase(UserModel user) async {
+    try {
+      CollectionReference users = FirebaseFirestore.instance.collection('users');
+      await users.doc(user.id).set(user.toMap());
+      print('User added successfully');
+    } catch (e) {
+      print('Error adding user: $e');
+    }
+  }
+
+  Future<bool> userExists(UserModel user) async {
+    try {
+      CollectionReference users = FirebaseFirestore.instance.collection('users');
+      DocumentSnapshot doc = await users.doc(user.id).get();
+      return doc.exists;
+    } catch (e) {
+      print('Error checking user existence: $e');
+      return false;
     }
   }
 }

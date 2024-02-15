@@ -54,7 +54,6 @@ class _TabContentsState extends State<TabContents> {
               elevation: 1,
               expandedHeaderPadding: const EdgeInsets.all(0),
               expansionCallback: (int index, bool isExpanded) {
-
                 setState(() {
                   list[index].isExpanded = isExpanded;
                 });

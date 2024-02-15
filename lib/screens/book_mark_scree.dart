@@ -78,8 +78,9 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
                                     begin: Alignment.topLeft,
                                     end: Alignment.bottomRight,
                                     colors: [
-                                      Colours.buttonColor1,
                                       Colours.buttonColor2,
+                                      Colours.buttonColor2,
+                                      Colours.buttonColor1,
                                     ],
                                   ),
                                   borderRadius: const BorderRadius.only(
@@ -93,7 +94,7 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
                                   children: [
                                     Flexible(
                                       child: Padding(
-                                        padding: const EdgeInsets.only(left: 8),
+                                        padding: const EdgeInsets.all(8),
                                         child: Center(
                                           child: Row(
                                             children: [
