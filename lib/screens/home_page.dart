@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:formula_user/models/user_model.dart';
+import 'package:formula_user/res/common.dart';
 import 'package:formula_user/res/db_helper.dart';
 import 'package:formula_user/res/styles.dart';
 import 'package:formula_user/screens/prime_member.dart';
@@ -12,6 +13,7 @@ import 'package:formula_user/screens/search_bar_screen.dart';
 import 'package:formula_user/screens/tab_contents.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/tab_model.dart';
 import '../res/colours.dart';
 import '../utilities.dart';
@@ -81,7 +83,7 @@ class _HomePageState extends State<HomePage>
       appBar: AppBar(
         elevation: 10,
         toolbarHeight: 40,
-        title: Text("Formula User",
+        title: Text("Mathematics",
             style: Styles.textWith18withBold(Colours.white)),
         backgroundColor: Colours.appbar,
         actions: [
@@ -91,12 +93,12 @@ class _HomePageState extends State<HomePage>
               pushToNewRoute(context, BecomePrimeMember());
             },
           ),
-          IconButton(
+        Common.isLogin?IconButton(
             icon: Icon(Icons.logout, color: Colours.white),
             onPressed: () {
               _signOut();
             },
-          ),
+          ):Container(),
 
         ],
       ),
@@ -109,6 +111,7 @@ class _HomePageState extends State<HomePage>
                     backgroundColor: Colors.white,
                     floating: true,
                     pinned: true,
+                    snap: true,
                     title: InkWell(
                       onTap: () {
                         pushToNewRoute(context, const SearchBarScreen());
@@ -181,9 +184,14 @@ class _HomePageState extends State<HomePage>
   }
 
   Future<void> _signOut() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     await GoogleSignIn().signOut();
     FirebaseAuth.instance.signOut();
     if (context.mounted) {
+      Common.isLogin = false;
+      Common.isPrime = false;
+      prefs.setBool("isLoggedIn", false);
+
       pushToNewRouteAndClearAll(context, const LoginPage());
     }
   }

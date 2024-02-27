@@ -1,6 +1,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:formula_user/res/common.dart';
 import 'package:formula_user/res/db_helper.dart';
 import '../models/content_item_model.dart';
 import '../models/content_model.dart';
@@ -10,7 +11,8 @@ import 'list_items/content_list_item.dart';
 class ContentList extends StatefulWidget {
   ContentModel item;
 
-  ContentList(this.item, {super.key});
+
+  ContentList(this.item,{super.key});
 
   @override
   State<ContentList> createState() => _ContentListState();
@@ -30,23 +32,24 @@ class _ContentListState extends State<ContentList> {
 
   }
 
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: list.length,
-        itemBuilder: (BuildContext context, int index) {
-          if (index % 4 == 3) {
-            // Insert your BannerAdWidget here
-            return const BannerAdWidget(); // Change this to the actual widget you want to insert
-          } else {
-            // Adjusted index to account for the inserted widgets
-            final adjustedIndex = index - (index ~/ 4);
-            return ContentListItem(list[adjustedIndex], dbHelper);
-          }
-          return ContentListItem(list[index],dbHelper);
-        });
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: list.length + (Common.isPrime ? (list.length ~/ 4) : 0),
+      itemBuilder: (BuildContext context, int index) {
+        if (Common.isPrime && index % 4 == 3) {
+          // Ads are available, show the ad widget at this index
+          return BannerAdWidget();
+        } else {
+          // Adjusted index to account for the inserted widgets
+          final adjustedIndex = Common.isPrime ? index - (index ~/ 4) : index;
+          return ContentListItem(list[adjustedIndex], dbHelper);
+        }
+      },
+    );
   }
 
   Future<void> getContentItemData() async {

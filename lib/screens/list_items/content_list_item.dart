@@ -110,7 +110,8 @@ class _ContentListItemState extends State<ContentListItem> {
 
                                 },
                                 icon:  isInBookmark ? Icon(Icons.favorite):Icon(Icons.favorite_border),
-                                color: isInBookmark ? Colours.white : Colours.white ),
+                                color: isInBookmark ? Colours.white
+                                    : Colours.white ),
                             IconButton(
                                 onPressed: (){
                                   SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -140,9 +141,9 @@ class _ContentListItemState extends State<ContentListItem> {
                         bottomRight: Radius.circular(16),
                         bottomLeft: Radius.circular(16)),
                     child: GestureDetector(
-                        onTap: (){
-                          pushToNewRoute(context,  DetailedFormulaScreen(widget.contentItemModel.imageUrl,widget.contentItemModel.pdfUrl));
-                        },
+                        // onTap: (){
+                        //   pushToNewRoute(context,  DetailedFormulaScreen(widget.contentItemModel.imageUrl,widget.contentItemModel.pdfUrl));
+                        // },
                         child: Container(
                           decoration: BoxDecoration(
                             color: Colours.white

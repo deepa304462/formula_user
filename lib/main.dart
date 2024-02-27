@@ -1,7 +1,9 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:formula_user/res/colours.dart';
+import 'package:formula_user/res/common.dart';
 import 'package:formula_user/res/styles.dart';
 import 'package:formula_user/screens/auth/login_page.dart';
 import 'package:formula_user/screens/bottom_navigation.dart';
@@ -10,6 +12,8 @@ import 'package:formula_user/utilities.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'models/user_model.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -59,10 +63,36 @@ class _SplashScreenState extends State<SplashScreen> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     final bool? isLoggedIn = prefs.getBool('isLoggedIn');
+    Common.isLogin = isLoggedIn ?? false;
+    Common.isPrime = false;
+
 
     if(isLoggedIn ?? false){
-      pushToNewRouteAndClearAll(context, MyBottomNavigation());
+      checkPrimeMember();
+
     }else{
+      pushToNewRouteAndClearAll(context, MyBottomNavigation());
+    }
+
+  }
+
+  Future<void> checkPrimeMember() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    try {
+      CollectionReference users = FirebaseFirestore.instance.collection('users');
+      DocumentSnapshot doc = await users.doc(prefs.getString('userId')).get();
+      if(doc['isPrimeMember']){
+        prefs.setBool('isPrimeMember', true);
+        Common.isPrime = true;
+      }else{
+        prefs.setBool('isPrimeMember', false);
+        Common.isPrime = false;
+      }
+      pushToNewRouteAndClearAll(context, MyBottomNavigation());
+
+    } catch (e) {
+      print('Error checking user existence: $e');
       pushToNewRouteAndClearAll(context, MyBottomNavigation());
     }
 

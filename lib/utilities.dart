@@ -11,8 +11,9 @@ void pushToNewRouteAndClearAll(BuildContext context, Widget routeName) {
       context, MaterialPageRoute(builder: (_) => routeName), (route) => false);
 }
 
-Future<void> storeToSharedPreference(bool isLoggedIn) async {
+Future<void> storeToSharedPreference(bool isLoggedIn, String userId) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
 
   await  prefs.setBool('isLoggedIn',isLoggedIn );
+  await  prefs.setString('userId',userId );
 }

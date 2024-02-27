@@ -1,5 +1,3 @@
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +12,7 @@ import 'no_use/edit_content.dart';
 
 class TabContents extends StatefulWidget {
   TabModel currentTab;
-  TabContents(this.currentTab,this.function, {super.key});
+  TabContents(this.currentTab, this.function, {super.key});
   Function function;
 
   @override
@@ -62,22 +60,25 @@ class _TabContentsState extends State<TabContents> {
                 return ExpansionPanel(
                   headerBuilder: (BuildContext context, bool isExpanded) {
                     return ListTile(
-                      onTap: (){
+                      onTap: () {
                         setState(() {
                           item.isExpanded = !isExpanded;
                         });
                       },
                       title: Row(
                         children: [
-                          Flexible(child: Text(item.title,)),
+                          Flexible(
+                              child: Text(
+                            item.title,
+                          )),
                         ],
                       ),
                       titleTextStyle: Styles.textWith16(Colours.black),
                     );
                   },
                   body: Padding(
-                    padding: const EdgeInsets.only(left: 12,right: 12),
-                    child: ContentList(item),
+                    padding: EdgeInsets.only(left: 12, right: 12),
+                    child: ContentList(item, ),
                   ),
                   isExpanded: item.isExpanded,
                 );
@@ -95,14 +96,18 @@ class _TabContentsState extends State<TabContents> {
     });
 
     list = [];
-    CollectionReference formulacontent = FirebaseFirestore.instance.collection('formulacontent');
+    CollectionReference formulacontent =
+        FirebaseFirestore.instance.collection('formulacontent');
 
     try {
-      QuerySnapshot querySnapshot = await formulacontent.where("tabId", isEqualTo: widget.currentTab.id.toString()).get();
+      QuerySnapshot querySnapshot = await formulacontent
+          .where("tabId", isEqualTo: widget.currentTab.id.toString())
+          .get();
 
       if (querySnapshot.docs.isNotEmpty) {
         for (var doc in querySnapshot.docs) {
-          final contentModel = ContentModel.fromJson(doc.data() as Map<String, dynamic>);
+          final contentModel =
+              ContentModel.fromJson(doc.data() as Map<String, dynamic>);
           list.add(contentModel);
         }
       }
@@ -112,6 +117,7 @@ class _TabContentsState extends State<TabContents> {
 
       list.sort((a, b) => a.index.compareTo(b.index));
 
+      list[0].isExpanded = true;
 
       // Debugging: Print contents of list after sorting
       print('After sorting: $list');
@@ -137,15 +143,12 @@ class _TabContentsState extends State<TabContents> {
 
   void deleteContent(ContentModel item) {
     // Reference to the document you want to delete
-    DocumentReference documentRef = FirebaseFirestore.instance.collection('formulacontent').doc(item.id);
+    DocumentReference documentRef =
+        FirebaseFirestore.instance.collection('formulacontent').doc(item.id);
 
     // Delete the document
-    documentRef
-        .delete()
-        .then((value) {
+    documentRef.delete().then((value) {
       widget.function();
-    })
-        .catchError((error) => print('Failed to delete document: $error'));
+    }).catchError((error) => print('Failed to delete document: $error'));
   }
 }
-

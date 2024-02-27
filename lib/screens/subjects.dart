@@ -1,12 +1,9 @@
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:formula_user/screens/content_list.dart';
 import 'package:formula_user/screens/subject_detail_screen.dart';
-import 'package:formula_user/screens/tab_contents.dart';
 import 'package:formula_user/utilities.dart';
-
-import '../models/content_item_model.dart';
-import '../models/content_model.dart';
 import '../models/tab_model.dart';
 import '../res/colours.dart';
 import '../res/styles.dart';
@@ -22,8 +19,9 @@ class Subjects extends StatefulWidget {
 }
 
 
-
 class _SubjectsState extends State<Subjects> {
+  bool _isLoading = false;
+
 
   @override
   initState(){
@@ -45,7 +43,7 @@ class _SubjectsState extends State<Subjects> {
             color: Colours.white
         ),
       ),
-      body: ListView.builder(
+      body: _isLoading?Center(child: CircularProgressIndicator(),) :ListView.builder(
         itemCount: list.length,
         itemBuilder: (context, index) {
           return ListTile(
@@ -81,6 +79,9 @@ class _SubjectsState extends State<Subjects> {
   }
 
   Future<void> getData() async {
+    setState(() {
+      _isLoading = true;
+    });
     CollectionReference formulatab =
     FirebaseFirestore.instance.collection('formulatab');
     QuerySnapshot querySnapshot = await formulatab.get();
@@ -90,10 +91,14 @@ class _SubjectsState extends State<Subjects> {
           .map((doc) => TabModel.fromJson(doc.data() as Map<String, dynamic>))
           .toList();
       list.sort((a, b) => a.index.compareTo(b.index));
-      setState(() {});
+      setState(() {
+        _isLoading = false;
+      });
     } else {
       list.add(TabModel("No Tab", "0", 0));
-      setState(() {});
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 

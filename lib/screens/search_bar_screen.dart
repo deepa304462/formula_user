@@ -61,55 +61,68 @@ class _SearchBarScreenState extends State<SearchBarScreen> {
                 itemBuilder: (context, index) {
                   final item = searchResults[index];
                   return  Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                          height: 40,
                           decoration:  BoxDecoration(
                               gradient: LinearGradient(
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
-                                colors: [Colours.buttonColor1,Colours.buttonColor2,],
+                                colors: [Colours.buttonColor2,Colours.buttonColor2,Colours.buttonColor1],
                               ),
                               borderRadius: const BorderRadius.only(topLeft: Radius.circular(16),topRight: Radius.circular(16))
                           ),
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8),
-                                child: Text(
-                                  item['title'],
-                                  style:Styles.textWith18withBold(Colours.white)
+                              Flexible(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 8),
+                                  child: Center(
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            item['title'],
+                                            style:Styles.textWith18withBold(Colours.white),
+                                            maxLines: 15,
+
+                                          ),
+                                        ),
+                                        // (item['pdfUrl'].isEmpty || item['pdfUrl'] == "")? Container(height: 50,) : TextButton(
+                                        //     onPressed: () {
+                                        //       pushToNewRoute(
+                                        //           context, PdfViewScreen((){},item['pdfUrl'],item['id'],));
+                                        //     },
+                                        //     child: const Row(
+                                        //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        //       children: [
+                                        //         Icon(
+                                        //           Icons.picture_as_pdf,
+                                        //           color: Colors.white,
+                                        //         ),
+                                        //
+                                        //       ],
+                                        //     )),
+                                        const Spacer(flex: 2),
+                                        Icon(Icons.favorite,color: Colours.white),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        Icon(Icons.share,color: Colours.white),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                    
+                                    
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ),
-                              (item['pdfUrl'].isEmpty || item['pdfUrl'] == "")? Container(height: 50,) : TextButton(
-                                  onPressed: () {
-                                    pushToNewRoute(
-                                        context, PdfViewScreen((){},item['pdfUrl'],item['id'],));
-                                  },
-                                  child: const Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Icon(
-                                        Icons.picture_as_pdf,
-                                        color: Colors.white,
-                                      ),
-
-                                    ],
-                                  )),
-                              const Spacer(flex: 2),
-                              Icon(Icons.favorite,color: Colours.white),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Icon(Icons.share,color: Colours.white),
-                              const SizedBox(
-                                width: 10,
-                              ),
-
-
                             ],
                           ),
                         ),
@@ -138,12 +151,13 @@ class _SearchBarScreenState extends State<SearchBarScreen> {
   }
   void _performSearch(String query) {
     final CollectionReference itemsCollection = FirebaseFirestore.instance.collection('contentItem');
+    final String lowercaseQuery = query.toLowerCase();
 
-    itemsCollection.where('title', isGreaterThanOrEqualTo: query).get().then((querySnapshot) {
+    itemsCollection.get().then((querySnapshot) {
       setState(() {
-        searchResults = querySnapshot.docs;
+        // Filter documents based on case-insensitive search
+        searchResults = querySnapshot.docs.where((doc) => doc['title'].toString().toLowerCase().contains(lowercaseQuery)).toList();
       });
     });
   }
-
 }
