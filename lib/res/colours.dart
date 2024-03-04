@@ -5,7 +5,7 @@ class Colours {
   static Color buttonColor1 = fromHex('#FA5C49');
   static Color white = Colors.white;
   static Color white1 = fromHex("#E9EFF8");
-  static Color buttonColor2 = fromHex("#2B4851");
+  static Color buttonColor2 = fromHex("#0F0F26");
   static Color white3 = fromHex("#EFEFEF");
   static Color shadeColour = fromHex("#EEF3F6");
   static Color appbar = fromHex("#16272A");
@@ -15,6 +15,10 @@ class Colours {
   static Color transparent = Colors.transparent;
   static Color gret500 = Colors.grey.shade500;
   static Color red900 = Colors.red.shade900;
+  static Color tabText = fromHex("#0E1A1A");
+  static Color listBackground = fromHex("#EEECFE");
+
+
 
   static Color fromHex(String hexString) {
     final buffer = StringBuffer();

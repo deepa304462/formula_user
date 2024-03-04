@@ -39,12 +39,12 @@ class _SubjectDetailState extends State<SubjectDetail> {
         toolbarHeight: 40,
         title: Text(widget.currentTab.name,
             style: Styles.textWith18withBold(Colours.white)),
-        backgroundColor: Colours.appbar,
+        backgroundColor: Colours.buttonColor2,
         iconTheme: IconThemeData(
           color: Colours.white
         ),
       ),
-      body: _isLoading ? _buildLoadingIndicator(Colours.appbar) : _buildPanel(),
+      body: _isLoading ? _buildLoadingIndicator(Colours.buttonColor2) : _buildPanel(),
     );
   }
 

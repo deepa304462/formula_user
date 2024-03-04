@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui'as ui;
 
@@ -24,7 +25,7 @@ import '../detailed_formula_screen.dart';
 class ContentListItem extends StatefulWidget {
   ContentItemModel contentItemModel;
   DBHelper? dbHelper;
-  ContentListItem(this.contentItemModel, this.dbHelper);
+  ContentListItem(this.contentItemModel,this.dbHelper);
 
 
 
@@ -54,15 +55,7 @@ class _ContentListItemState extends State<ContentListItem> {
           children: [
             Container(
               decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Colours.buttonColor2,
-                      Colours.buttonColor2,
-                      Colours.buttonColor1,
-                    ],
-                  ),
+                 color: widget.contentItemModel.color,
                   borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(16),
                       topRight: Radius.circular(16))),
@@ -97,7 +90,7 @@ class _ContentListItemState extends State<ContentListItem> {
                                             id: widget.contentItemModel.id,
                                             title: widget.contentItemModel.title,
                                             image: widget.contentItemModel.imageUrl,
-                                            pdf: widget.contentItemModel.pdfUrl
+                                            pdf: widget.contentItemModel.pdfUrl,
                                         )).then((value){
                                       setState(() {
                                         isInBookmark = true;
@@ -216,11 +209,8 @@ class _ContentListItemState extends State<ContentListItem> {
   }
 
   Future<void> checkIfBookMark() async {
-    // Wait for the result before setting the icon color
     isInBookmark = (await widget.dbHelper?.isInBookMark(widget.contentItemModel.id))!;
 
-    // Set the icon color based on the result
-    setState(() {});
   }
 
   void requestStoragePermission() async {

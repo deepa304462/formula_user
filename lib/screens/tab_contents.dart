@@ -71,6 +71,7 @@ class _TabContentsState extends State<TabContents> {
                               child: Text(
                             item.title,
                           )),
+
                         ],
                       ),
                       titleTextStyle: Styles.textWith16(Colours.black),

@@ -18,18 +18,18 @@ import 'models/user_model.dart';
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-      options: const FirebaseOptions(apiKey: "AIzaSyDhcEMZ_oGAay0Z6u1iVZgg6eaRDzc1zAM",
-          appId: "735367481552",
-          messagingSenderId: "735367481552",
-          projectId: "com.physics.formula_admin",
-      ),
+    options: const FirebaseOptions(
+      apiKey: "AIzaSyDhcEMZ_oGAay0Z6u1iVZgg6eaRDzc1zAM",
+      appId: "735367481552",
+      messagingSenderId: "735367481552",
+      projectId: "com.physics.formula_admin",
+    ),
   );
   MobileAds.instance.initialize();
-  runApp(   MaterialApp(
+  runApp(const MaterialApp(
     debugShowCheckedModeBanner: false,
     home: SplashScreen(),
   ));
-
 }
 
 class SplashScreen extends StatefulWidget {
@@ -40,21 +40,24 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-
-  
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(seconds: 2)).then((value) {
+    Future.delayed(const Duration(seconds: 2)).then((value) {
       getLogInValue();
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colours.buttonColor2,
       body: Center(
-        child: Image.asset("assets/logo.png",height: 250,width: 250,),
+        child: Image.asset(
+          "assets/logo.png",
+          height: 250,
+          width: 250,
+        ),
       ),
     );
   }
@@ -66,37 +69,31 @@ class _SplashScreenState extends State<SplashScreen> {
     Common.isLogin = isLoggedIn ?? false;
     Common.isPrime = false;
 
-
-    if(isLoggedIn ?? false){
+    if (isLoggedIn ?? false) {
       checkPrimeMember();
-
-    }else{
+    } else {
       pushToNewRouteAndClearAll(context, MyBottomNavigation());
     }
-
   }
 
   Future<void> checkPrimeMember() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     try {
-      CollectionReference users = FirebaseFirestore.instance.collection('users');
+      CollectionReference users =
+          FirebaseFirestore.instance.collection('users');
       DocumentSnapshot doc = await users.doc(prefs.getString('userId')).get();
-      if(doc['isPrimeMember']){
+      if (doc['isPrimeMember']) {
         prefs.setBool('isPrimeMember', true);
         Common.isPrime = true;
-      }else{
+      } else {
         prefs.setBool('isPrimeMember', false);
         Common.isPrime = false;
       }
       pushToNewRouteAndClearAll(context, MyBottomNavigation());
-
     } catch (e) {
       print('Error checking user existence: $e');
       pushToNewRouteAndClearAll(context, MyBottomNavigation());
     }
-
   }
-
-
 }

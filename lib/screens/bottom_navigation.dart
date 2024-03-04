@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:formula_user/screens/about_screen.dart';
 import 'package:formula_user/screens/book_mark_scree.dart';
 import 'package:formula_user/screens/subjects.dart';
@@ -33,34 +34,35 @@ class _MyBottomNavigationState extends State<MyBottomNavigation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //backgroundColor: Colours.buttonColor2,
+      backgroundColor: Colours.buttonColor2,
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colours.buttonColor2,
         type: BottomNavigationBarType.fixed,
-        selectedFontSize: 16,
-        selectedLabelStyle: Styles.textWith14withBold(Colours.black),
+        selectedFontSize: 14,
+        selectedLabelStyle: Styles.textWith14(Colours.white),
         unselectedLabelStyle: Styles.textWith14(Colours.black),
         items:  <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home,color: Colours.greyLight700,),
+            icon: SvgPicture.asset("assets/homepage.svg",color: Colours.gret500,),
             label: 'Homepage',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.subject,color: Colours.greyLight700,),
+            icon: Icon(Icons.subject,color: Colours.gret500,size: 20,),
             label: 'Subjects',
           ),
           BottomNavigationBarItem(
-            icon:Icon(Icons.favorite,color: Colours.greyLight700,),
+            icon:SvgPicture.asset("assets/bookmark.svg",color:Colours.gret500,),
             label: 'Book Marks',
           ),
           BottomNavigationBarItem(
-            icon:Icon(Icons.info,color: Colours.greyLight700,),
+            icon:SvgPicture.asset("assets/about.svg",color: Colours.gret500,width: 20,height: 20,),
             label: 'About',
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colours.black,
-        unselectedItemColor:Colours.black,
+        selectedItemColor: Colours.white,
+        unselectedItemColor:Colours.gret500,
         onTap: _onItemTapped,
       ),
     );

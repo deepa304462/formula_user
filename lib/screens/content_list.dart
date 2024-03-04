@@ -1,4 +1,6 @@
 
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:formula_user/res/common.dart';
@@ -46,7 +48,7 @@ class _ContentListState extends State<ContentList> {
         } else {
           // Adjusted index to account for the inserted widgets
           final adjustedIndex = Common.isPrime ? index - (index ~/ 4) : index;
-          return ContentListItem(list[adjustedIndex], dbHelper);
+          return ContentListItem(list[adjustedIndex],dbHelper,);
         }
       },
     );
@@ -91,8 +93,6 @@ class _ContentListState extends State<ContentList> {
       // widget.function();
     }).catchError((error) => print('Failed to delete document: $error'));
   }
-
-
 
 
 

@@ -38,7 +38,7 @@ class _SubjectsState extends State<Subjects> {
         toolbarHeight: 40,
         title: Text("Subjects",
             style: Styles.textWith18withBold(Colours.white)),
-        backgroundColor: Colours.appbar,
+        backgroundColor: Colours.buttonColor2,
         iconTheme: IconThemeData(
             color: Colours.white
         ),
@@ -48,12 +48,12 @@ class _SubjectsState extends State<Subjects> {
         itemBuilder: (context, index) {
           return ListTile(
             title: Padding(
-              padding: const EdgeInsets.only(top: 8.0),
+              padding: const EdgeInsets.only(top: 2.0),
               child: Container(
                 height: 50,
                 width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
-                  border: Border.all(color:Colours.greyLight),
+                  color:Colours.listBackground ,
                   borderRadius: BorderRadius.circular(6)
                 ),
                 child: Padding(
@@ -61,8 +61,8 @@ class _SubjectsState extends State<Subjects> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(list[index].name,style: Styles.textWith16bold(Colours.black)),
-                      Icon(Icons.arrow_circle_right_outlined,color: Colours.buttonColor2,)
+                      Text(list[index].name,style: Styles.textWith14withBold(Colours.black)),
+                      Icon(Icons.arrow_circle_right_outlined,color: Colours.buttonColor2,size: 20,)
                     ],
                   ),
                 ),

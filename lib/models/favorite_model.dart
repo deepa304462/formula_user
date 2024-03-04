@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 class FavoriteModel {
   final String? id;
   final String title;
@@ -9,7 +11,7 @@ class FavoriteModel {
       {this.id,
       required this.title,
       required this.image,
-        required this.pdf
+        required this.pdf,
       });
 
   FavoriteModel.fromMap(Map<String, dynamic> res)
@@ -19,13 +21,15 @@ class FavoriteModel {
         pdf = res["pdf"];
 
 
+
   Map<String, Object?> toMap(){
 
     return {
       'id':id,
       "title":title,
       "image":image,
-      "pdf":pdf
+      "pdf":pdf,
+
 
     };
   }

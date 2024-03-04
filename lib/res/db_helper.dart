@@ -34,7 +34,7 @@ class DBHelper{
 
   _onCreate(Database db, int version) async {
     await db.execute(
-      "CREATE TABLE favorites (id TEXT PRIMARY KEY, title TEXT NOT NULL, image IMAGE NOT NULL, pdf TEXT NOT NULL) "
+      "CREATE TABLE favorites (id TEXT PRIMARY KEY, title TEXT NOT NULL, image IMAGE NOT NULL, pdf TEXT NOT NULL, ) "
     );
   }
 
@@ -66,6 +66,9 @@ class DBHelper{
   }
 
   Future<void> deleteFromFavorite(String id) async {
+    print("bookmark");
+    print("bookmark1");
+    print(id);
 
     var dbClient = await db;
 

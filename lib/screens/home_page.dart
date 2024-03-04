@@ -81,16 +81,16 @@ class _HomePageState extends State<HomePage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 10,
+        elevation: 0,
         toolbarHeight: 40,
         title: Text("Mathematics",
             style: Styles.textWith18withBold(Colours.white)),
-        backgroundColor: Colours.appbar,
+        backgroundColor: Colours.buttonColor2,
         actions: [
           IconButton(
             icon: Image.asset('assets/prime.png',color: Colors.white,),
             onPressed: () {
-              pushToNewRoute(context, BecomePrimeMember());
+              pushToNewRoute(context, const BecomePrimeMember());
             },
           ),
         Common.isLogin?IconButton(
@@ -108,7 +108,7 @@ class _HomePageState extends State<HomePage>
               headerSliverBuilder: (context, value) {
                 return [
                   SliverAppBar(
-                    backgroundColor: Colors.white,
+                    backgroundColor: Colours.white,
                     floating: true,
                     pinned: true,
                     snap: true,
@@ -117,7 +117,7 @@ class _HomePageState extends State<HomePage>
                         pushToNewRoute(context, const SearchBarScreen());
                       },
                       child: Container(
-                        height: 40,
+                        height: 32,
                         width: MediaQuery.of(context).size.width,
                         decoration: BoxDecoration(
                             color: Colors.grey.shade200,
@@ -136,7 +136,7 @@ class _HomePageState extends State<HomePage>
                               ),
                               Text(
                                 "Search here",
-                                style: Styles.textWith18withBold500(
+                                style: Styles.textWith14withBold(
                                     Colours.greyLight700),
                               ),
                             ],
@@ -147,9 +147,9 @@ class _HomePageState extends State<HomePage>
                     bottom: TabBar(
                         controller: _tabController,
                         isScrollable: true,
-                        labelColor: Colours.buttonColor2,
-                        labelStyle: Styles.textWith16bold(Colours.black),
-                        indicatorColor: Colours.black,
+                        labelColor: Colors.pinkAccent,
+                        labelStyle: Styles.textWith14withBold(Colours.buttonColor2),
+                        indicatorColor: Colors.pinkAccent,
                         indicatorSize: TabBarIndicatorSize.tab,
                         tabs: List.generate(
                             list.length,
@@ -176,6 +176,7 @@ class _HomePageState extends State<HomePage>
                                 }
                                 )
                         ),
+
                       ),
                     )
           )

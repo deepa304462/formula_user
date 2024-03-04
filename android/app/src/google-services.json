@@ -14,6 +14,72 @@
       },
       "oauth_client": [
         {
+          "client_id": "735367481552-j9738hm6kr2aakt5vnhiodc4689kpb8p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.formula_user",
+            "certificate_hash": "e8972dee28df1f9b333205ba41ac53f87a63e756"
+          }
+        },
+        {
+          "client_id": "735367481552-tiq0nqu2eic0osqh1g01umgje2eddcok.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhcEMZ_oGAay0Z6u1iVZgg6eaRDzc1zAM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "735367481552-tiq0nqu2eic0osqh1g01umgje2eddcok.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:735367481552:android:aeb843b1152a017875b6d5",
+        "android_client_info": {
+          "package_name": "com.formula.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "735367481552-tiq0nqu2eic0osqh1g01umgje2eddcok.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhcEMZ_oGAay0Z6u1iVZgg6eaRDzc1zAM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "735367481552-tiq0nqu2eic0osqh1g01umgje2eddcok.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:735367481552:android:bff16bbb8e2c2edb75b6d5",
+        "android_client_info": {
+          "package_name": "com.formula.user"
+        }
+      },
+      "oauth_client": [
+        {
           "client_id": "735367481552-tiq0nqu2eic0osqh1g01umgje2eddcok.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -42,6 +108,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "735367481552-73r4hhjjgeqd9tjorcgcg0im9j76t4d5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.physics.formula_admin",
+            "certificate_hash": "e8972dee28df1f9b333205ba41ac53f87a63e756"
+          }
+        },
         {
           "client_id": "735367481552-benq8ae1drnpr0epia16oral0s5idu5v.apps.googleusercontent.com",
           "client_type": 1,

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
@@ -17,8 +18,6 @@ import 'package:share_plus/share_plus.dart';
 import '../models/favorite_model.dart';
 import '../res/colours.dart';
 import '../res/styles.dart';
-import '../utilities.dart';
-import 'detailed_formula_screen.dart';
 
 class BookMarksScreen extends StatefulWidget {
   const BookMarksScreen({Key? key}) : super(key: key);
@@ -58,7 +57,7 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
         elevation: 10,
         toolbarHeight: 40,
         title: Text("Book Marks", style: Styles.textWith18withBold(Colours.white)),
-        backgroundColor: Colours.appbar,
+        backgroundColor: Colours.buttonColor2,
       ),
       body: RepaintBoundary(
         key: scaffoldKey,
@@ -90,20 +89,12 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Container(
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                      colors: [
-                                        Colours.buttonColor2,
-                                        Colours.buttonColor2,
-                                        Colours.buttonColor1,
-                                      ],
-                                    ),
-                                    borderRadius: const BorderRadius.only(
+                                  decoration:  BoxDecoration(
+                                    borderRadius: BorderRadius.only(
                                       topLeft: Radius.circular(16),
                                       topRight: Radius.circular(16),
                                     ),
+                                    color: getRandomColor(),
                                   ),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -124,14 +115,18 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
                                                       Styles.textWith18withBold(Colours.white)),
                                                 ),
                                                 IconButton(
-                                                    onPressed: (){
-                                                      dbHelper!.deleteFromFavorite(snapshot.data![index].title);
-                                                      setState(() {
-                                                        isInBookmark = false;
-                                                        loadData();
-                                                      });
+                                                    onPressed: () async {
+                                                      // Delete the item from favorites
+                                                      isInBookmark = false;
+                                                      await dbHelper!.deleteFromFavorite(snapshot.data![index].id.toString());
+
+                                                      // Reload data
+                                                      loadData();
+
+                                                      // Trigger rebuild of widget tree
+                                                      setState(() {});
                                                     },
-                                                    icon:  isInBookmark ? Icon(Icons.favorite):Icon(Icons.favorite_border),
+                                                    icon:  isInBookmark ? const Icon(Icons.favorite):const Icon(Icons.favorite_border),
                                                     color: isInBookmark ? Colours.white
                                                         : Colours.white ),
                                                 IconButton(
@@ -280,5 +275,15 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
     img.drawString(image, watermarkText, font: img.arial24, color: img.ColorRgb8(129, 133, 137));
     print('Image dimensions after adding watermark: ${image.width} x ${image.height}');
     return Uint8List.fromList(img.encodePng(image));
+  }
+
+  Color getRandomColor() {
+    Random random = Random();
+    return Color.fromRGBO(
+      random.nextInt(256),
+      random.nextInt(256),
+      random.nextInt(256),
+      1,
+    );
   }
 }

@@ -1,5 +1,18 @@
 
 
+import 'dart:math';
+import 'dart:ui';
+
+Color getRandomColor() {
+  Random random = Random();
+  return Color.fromRGBO(
+    random.nextInt(256),
+    random.nextInt(256),
+    random.nextInt(256),
+    1,
+  );
+}
+
 class ContentItemModel{
   String _id ='';
   String _title = '';
@@ -7,6 +20,11 @@ class ContentItemModel{
   String _contentId = '';
   String _pdfUrl = '';
   int _index = 0;
+  Color color = getRandomColor();
+
+
+
+
 
   int get index => _index;
 
