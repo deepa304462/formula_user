@@ -1,28 +1,28 @@
-import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:formula_user/res/colours.dart';
 import 'package:formula_user/res/common.dart';
-import 'package:formula_user/res/styles.dart';
-import 'package:formula_user/screens/auth/login_page.dart';
 import 'package:formula_user/screens/bottom_navigation.dart';
-import 'package:formula_user/screens/home_page.dart';
-import 'package:formula_user/utilities.dart';
+import 'package:get_it/get_it.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:formula_user/dependencyinjection/injection_container.dart' as ic;
+import 'package:video_player/video_player.dart';
 
-import 'models/user_model.dart';
+
+final serviceLocator = GetIt.instance;
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await ic.init();
   await Firebase.initializeApp(
     options: const FirebaseOptions(
       apiKey: "AIzaSyDhcEMZ_oGAay0Z6u1iVZgg6eaRDzc1zAM",
       appId: "735367481552",
       messagingSenderId: "735367481552",
-      projectId: "com.physics.formula_admin",
+      projectId: "com.formula.user",
     ),
   );
   MobileAds.instance.initialize();
@@ -40,10 +40,24 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  late VideoPlayerController _controller;
+  bool _visible = false;
+
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 2)).then((value) {
+    _controller = VideoPlayerController.asset("assets/splash_video.mp4");
+    _controller.initialize().then((_) {
+      _controller.setLooping(true);
+      Timer(Duration(seconds:0 ), () {
+        setState(() {
+          _controller.play();
+          _visible = true;
+        });
+      });
+    });
+
+    Future.delayed(Duration(seconds: 6), () {
       getLogInValue();
     });
   }
@@ -51,18 +65,21 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colours.buttonColor2,
-      body: Center(
-        child: Image.asset(
-          "assets/logo.png",
-          height: 250,
-          width: 250,
+      backgroundColor: Colours.transparent,
+      body: _visible
+          ? Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: AspectRatio(
+          aspectRatio: _controller.value.aspectRatio,
+          child: VideoPlayer(_controller),
         ),
-      ),
+      )
+          : Container(),
     );
   }
 
-  getLogInValue() async {
+  Future<void> getLogInValue() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     final bool? isLoggedIn = prefs.getBool('isLoggedIn');
@@ -70,9 +87,13 @@ class _SplashScreenState extends State<SplashScreen> {
     Common.isPrime = false;
 
     if (isLoggedIn ?? false) {
-      checkPrimeMember();
+      await checkPrimeMember();
     } else {
-      pushToNewRouteAndClearAll(context, MyBottomNavigation());
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => MyBottomNavigation()),
+            (e) => false,
+      );
     }
   }
 
@@ -81,7 +102,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
     try {
       CollectionReference users =
-          FirebaseFirestore.instance.collection('users');
+      FirebaseFirestore.instance.collection('users');
       DocumentSnapshot doc = await users.doc(prefs.getString('userId')).get();
       if (doc['isPrimeMember']) {
         prefs.setBool('isPrimeMember', true);
@@ -90,10 +111,24 @@ class _SplashScreenState extends State<SplashScreen> {
         prefs.setBool('isPrimeMember', false);
         Common.isPrime = false;
       }
-      pushToNewRouteAndClearAll(context, MyBottomNavigation());
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => MyBottomNavigation()),
+            (e) => false,
+      );
     } catch (e) {
       print('Error checking user existence: $e');
-      pushToNewRouteAndClearAll(context, MyBottomNavigation());
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => MyBottomNavigation()),
+            (e) => false,
+      );
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
   }
 }

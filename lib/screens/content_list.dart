@@ -44,11 +44,18 @@ class _ContentListState extends State<ContentList> {
       itemBuilder: (BuildContext context, int index) {
         if (Common.isPrime && index % 4 == 3) {
           // Ads are available, show the ad widget at this index
-          return BannerAdWidget();
+          return const BannerAdWidget();
         } else {
           // Adjusted index to account for the inserted widgets
           final adjustedIndex = Common.isPrime ? index - (index ~/ 4) : index;
-          return ContentListItem(list[adjustedIndex],dbHelper,);
+          return Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image:AssetImage("assets/app_background.png"),
+                fit: BoxFit.fill
+              )
+            ),
+              child: ContentListItem(list[adjustedIndex],dbHelper,));
         }
       },
     );

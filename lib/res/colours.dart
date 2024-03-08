@@ -17,6 +17,7 @@ class Colours {
   static Color red900 = Colors.red.shade900;
   static Color tabText = fromHex("#0E1A1A");
   static Color listBackground = fromHex("#EEECFE");
+  static Color titleBackground = fromHex("#5A918C");
 
 
 

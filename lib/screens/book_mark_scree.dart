@@ -3,6 +3,7 @@ import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
+import 'package:flutter_svg/svg.dart';
 import 'package:image/image.dart' as img;
 
 import 'package:flutter/foundation.dart';
@@ -94,7 +95,7 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
                                       topLeft: Radius.circular(16),
                                       topRight: Radius.circular(16),
                                     ),
-                                    color: getRandomColor(),
+                                    color: Colours.titleBackground
                                   ),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -102,43 +103,52 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
                                     children: [
                                       Flexible(
                                         child: Padding(
-                                          padding: const EdgeInsets.all(8),
-                                          child: Center(
-                                            child:  Row(
-                                              children: [
-                                                Expanded(
-                                                  child: Text(
-                                                      textAlign: TextAlign.center,
-                                                      maxLines: 5,
-                                                      snapshot.data![index].title,
-                                                      style:
-                                                      Styles.textWith18withBold(Colours.white)),
+                                          padding: const EdgeInsets.only(left: 8,right: 8,top: 4,bottom: 4),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                    textAlign: TextAlign.center,
+                                                    maxLines: 5,
+                                                    snapshot.data![index].title,
+                                                    style:
+                                                    Styles.textWith18withBold(Colours.white)),
+                                              ),
+                                              InkWell(
+                                                onTap: () async {
+                                                  isInBookmark = false;
+                                                  await dbHelper!.deleteFromFavorite(snapshot.data![index].id.toString());
+
+                                                  // Reload data
+                                                  loadData();
+
+                                                  // Trigger rebuild of widget tree
+                                                  setState(() {});
+                                                },
+                                                child: SvgPicture.asset(
+                                                  isInBookmark ? "assets/bookmark.svg" : "assets/bookmark_border.svg",
+                                                  width: 30,
+                                                  height: 30,
+                                                  color: Colours.white,
                                                 ),
-                                                IconButton(
-                                                    onPressed: () async {
-                                                      // Delete the item from favorites
-                                                      isInBookmark = false;
-                                                      await dbHelper!.deleteFromFavorite(snapshot.data![index].id.toString());
+                                              ),
 
-                                                      // Reload data
-                                                      loadData();
+                                           InkWell(
+                                             onTap: (){
+                                               SchedulerBinding.instance.addPostFrameCallback((_) {
+                                                 requestStoragePermission(snapshot.data?[index]);
+                                               });
+                                             },
+                                             child: SvgPicture.asset(
+                                                      "assets/share_icon.svg",
+                                                      width: 30,
+                                                      height: 30,
 
-                                                      // Trigger rebuild of widget tree
-                                                      setState(() {});
-                                                    },
-                                                    icon:  isInBookmark ? const Icon(Icons.favorite):const Icon(Icons.favorite_border),
-                                                    color: isInBookmark ? Colours.white
-                                                        : Colours.white ),
-                                                IconButton(
-                                                    onPressed: (){
-                                                      SchedulerBinding.instance.addPostFrameCallback((_) {
-                                                        requestStoragePermission(snapshot.data?[index]);
-                                                      });
-                                                    },
-                                                    icon: const Icon(Icons.share),
                                                     color: Colours.white),
-                                              ],
-                                            ),
+                                           ),
+                                            ],
                                           ),
                                         ),
                                       ),
@@ -277,13 +287,4 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
     return Uint8List.fromList(img.encodePng(image));
   }
 
-  Color getRandomColor() {
-    Random random = Random();
-    return Color.fromRGBO(
-      random.nextInt(256),
-      random.nextInt(256),
-      random.nextInt(256),
-      1,
-    );
-  }
 }

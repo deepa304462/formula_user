@@ -1,12 +1,8 @@
 import 'dart:async';
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:formula_user/models/user_model.dart';
 import 'package:formula_user/res/common.dart';
-import 'package:formula_user/res/db_helper.dart';
 import 'package:formula_user/res/styles.dart';
 import 'package:formula_user/screens/prime_member.dart';
 import 'package:formula_user/screens/search_bar_screen.dart';
@@ -108,7 +104,7 @@ class _HomePageState extends State<HomePage>
               headerSliverBuilder: (context, value) {
                 return [
                   SliverAppBar(
-                    backgroundColor: Colours.white,
+                    backgroundColor: Colours.buttonColor2,
                     floating: true,
                     pinned: true,
                     snap: true,
@@ -144,19 +140,40 @@ class _HomePageState extends State<HomePage>
                         ),
                       ),
                     ),
-                    bottom: TabBar(
-                        controller: _tabController,
-                        isScrollable: true,
-                        labelColor: Colors.pinkAccent,
-                        labelStyle: Styles.textWith14withBold(Colours.buttonColor2),
-                        indicatorColor: Colors.pinkAccent,
-                        indicatorSize: TabBarIndicatorSize.tab,
-                        tabs: List.generate(
-                            list.length,
-                            (index) => Tab(
-                                  text: list[index].name,
+                    bottom: PreferredSize(
+                      preferredSize: const Size.square(50) ,
+                      child: Material(
+                        color: Colours.listBackground,
+                        child: TabBar(
+                            controller: _tabController,
+                            isScrollable: true,
+                            labelColor: Colors.pinkAccent,
+                            labelStyle: Styles.textWith14withBold(Colours.buttonColor2),
+                            indicatorColor: Colors.pinkAccent,
+                            indicatorSize: TabBarIndicatorSize.label,
+                            tabs: List.generate(
+                                list.length,
+                                (index) => Row(
+                                  children: [
+                                    Container(
+                                      height: 30,
+                                      width: 1.5,
+                                      decoration: BoxDecoration(
+                                        color: Colours.greyLight
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 20,
+                                    ),
+                                    Tab(
+                                          text: list[index].name,
+                                        ),
+
+                                  ],
                                 )
-                        )
+                            )
+                        ),
+                      ),
                     ),
                   )
                 ];

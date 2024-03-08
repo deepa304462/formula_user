@@ -172,8 +172,8 @@ class _BecomePrimeMemberState extends State<BecomePrimeMember> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (_) => const SplashScreen()));
+                /*Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (_) => const SplashScreen()));*/
               },
               child: Text(
                 'Close',

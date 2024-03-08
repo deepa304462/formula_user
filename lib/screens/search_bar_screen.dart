@@ -24,7 +24,7 @@ class _SearchBarScreenState extends State<SearchBarScreen> {
         toolbarHeight: 40,
         title: Text("Search here",
             style: Styles.textWith18withBold(Colours.white)),
-        backgroundColor: Colours.appbar,
+        backgroundColor: Colours.buttonColor2,
         iconTheme: IconThemeData(
           color: Colours.white
         ),

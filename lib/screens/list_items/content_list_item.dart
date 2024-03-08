@@ -1,12 +1,13 @@
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
-import 'dart:ui'as ui;
+import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:formula_user/models/content_item_model.dart';
 import 'package:formula_user/res/db_helper.dart';
@@ -21,19 +22,14 @@ import '../../res/styles.dart';
 import '../../utilities.dart';
 import '../detailed_formula_screen.dart';
 
-
 class ContentListItem extends StatefulWidget {
   ContentItemModel contentItemModel;
   DBHelper? dbHelper;
-  ContentListItem(this.contentItemModel,this.dbHelper);
-
-
+  ContentListItem(this.contentItemModel, this.dbHelper);
 
   @override
   State<ContentListItem> createState() => _ContentListItemState();
 }
-
-
 
 class _ContentListItemState extends State<ContentListItem> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
@@ -41,7 +37,7 @@ class _ContentListItemState extends State<ContentListItem> {
   @override
   void initState() {
     super.initState();
-   checkIfBookMark();
+    checkIfBookMark();
   }
 
   @override
@@ -55,7 +51,7 @@ class _ContentListItemState extends State<ContentListItem> {
           children: [
             Container(
               decoration: BoxDecoration(
-                 color: widget.contentItemModel.color,
+                  color: Colours.titleBackground,
                   borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(16),
                       topRight: Radius.circular(16))),
@@ -65,7 +61,7 @@ class _ContentListItemState extends State<ContentListItem> {
                 children: [
                   Flexible(
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 8),
+                      padding: const EdgeInsets.only(left: 8,top: 4,bottom: 4,right: 8),
                       child: Center(
                         child: Row(
                           children: [
@@ -75,44 +71,54 @@ class _ContentListItemState extends State<ContentListItem> {
                                   maxLines: 5,
                                   widget.contentItemModel.title,
                                   style:
-                                  Styles.textWith18withBold(Colours.white)),
+                                      Styles.textWith18withBold(Colours.white)),
                             ),
-                            IconButton(
-                                onPressed: (){
-                                  if(isInBookmark){
-                                  widget.dbHelper!.deleteFromFavorite(widget.contentItemModel.id);
+                            InkWell(
+                              onTap: (){
+                                if (isInBookmark) {
+                                  widget.dbHelper!.deleteFromFavorite(
+                                      widget.contentItemModel.id);
                                   setState(() {
                                     isInBookmark = false;
                                   });
-                                  }else{
-                                    widget.dbHelper!.insert(
-                                        FavoriteModel(
-                                            id: widget.contentItemModel.id,
-                                            title: widget.contentItemModel.title,
-                                            image: widget.contentItemModel.imageUrl,
-                                            pdf: widget.contentItemModel.pdfUrl,
-                                        )).then((value){
-                                      setState(() {
-                                        isInBookmark = true;
-                                      });
-                                    }).onError((error, stackTrace){
-                                      print(error.toString());
+                                } else {
+                                  widget.dbHelper!
+                                      .insert(FavoriteModel(
+                                    id: widget.contentItemModel.id,
+                                    title: widget.contentItemModel.title,
+                                    image: widget.contentItemModel.imageUrl,
+                                    pdf: widget.contentItemModel.pdfUrl,
+                                  ))
+                                      .then((value) {
+                                    setState(() {
+                                      isInBookmark = true;
                                     });
-                                  }
-
-
-                                },
-                                icon:  isInBookmark ? Icon(Icons.favorite):Icon(Icons.favorite_border),
-                                color: isInBookmark ? Colours.white
-                                    : Colours.white ),
-                            IconButton(
-                                onPressed: (){
-                                  SchedulerBinding.instance.addPostFrameCallback((_) {
-                                    requestStoragePermission();
+                                  }).onError((error, stackTrace) {
+                                    print(error.toString());
                                   });
-                                },
-                                icon: const Icon(Icons.share),
-                                color: Colours.white),
+                                }
+                              },
+                              child: SvgPicture.asset(
+                               isInBookmark? "assets/bookmark.svg" : "assets/bookmark_border.svg",
+                                width: 30,
+                                height: 30,
+                                color: Colours.white,
+                              ),
+                            ),
+                          InkWell(
+                            onTap: (){
+                              SchedulerBinding.instance
+                                  .addPostFrameCallback((_) {
+                                requestStoragePermission();
+                              });
+                            },
+                            child: SvgPicture.asset(
+                                    "assets/share_icon.svg",
+                                    width: 30,
+                                    height: 30,
+
+                                  color: Colours.white),
+                          ),
                           ],
                         ),
                       ),
@@ -127,8 +133,8 @@ class _ContentListItemState extends State<ContentListItem> {
                     borderRadius: const BorderRadius.only(
                         bottomLeft: Radius.circular(16),
                         bottomRight: Radius.circular(16))
-                  // borderRadius: BorderRadius.circular(16)
-                ),
+                    // borderRadius: BorderRadius.circular(16)
+                    ),
                 child: ClipRRect(
                     borderRadius: const BorderRadius.only(
                         bottomRight: Radius.circular(16),
@@ -138,19 +144,22 @@ class _ContentListItemState extends State<ContentListItem> {
                         //   pushToNewRoute(context,  DetailedFormulaScreen(widget.contentItemModel.imageUrl,widget.contentItemModel.pdfUrl));
                         // },
                         child: Container(
-                          decoration: BoxDecoration(
-                            color: Colours.white
-                          ),
-                            child: Image.network(widget.contentItemModel.imageUrl)))))
+                            decoration: BoxDecoration(color: Colours.white),
+                            child: Image.network(
+                                widget.contentItemModel.imageUrl)))))
           ],
         ),
       ),
     );
   }
 
-  Future<Uint8List> captureScreenshot(GlobalKey<State<StatefulWidget>> key) async {
-    RenderRepaintBoundary boundary = key.currentContext!.findRenderObject() as RenderRepaintBoundary;
-    ui.Image image = await boundary.toImage(pixelRatio: 1.0,);
+  Future<Uint8List> captureScreenshot(
+      GlobalKey<State<StatefulWidget>> key) async {
+    RenderRepaintBoundary boundary =
+        key.currentContext!.findRenderObject() as RenderRepaintBoundary;
+    ui.Image image = await boundary.toImage(
+      pixelRatio: 1.0,
+    );
     ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
     Uint8List uint8List = byteData!.buffer.asUint8List();
     return uint8List;
@@ -158,12 +167,14 @@ class _ContentListItemState extends State<ContentListItem> {
 
   Uint8List addWatermark(Uint8List imageBytes, String watermarkText) {
     img.Image image = img.decodeImage(imageBytes)!;
-    print('Image dimensions before adding watermark: ${image.width} x ${image.height}');
-    img.drawString(image, watermarkText, font: img.arial24, color: img.ColorRgb8(129, 133, 137));
-    print('Image dimensions after adding watermark: ${image.width} x ${image.height}');
+    print(
+        'Image dimensions before adding watermark: ${image.width} x ${image.height}');
+    img.drawString(image, watermarkText,
+        font: img.arial24, color: img.ColorRgb8(129, 133, 137));
+    print(
+        'Image dimensions after adding watermark: ${image.width} x ${image.height}');
     return Uint8List.fromList(img.encodePng(image));
   }
-
 
   checkDebugPaint() async {
     var debugNeedsPaint = false;
@@ -180,9 +191,11 @@ class _ContentListItemState extends State<ContentListItem> {
 
   void captureModifyAndShare(GlobalKey<State<StatefulWidget>> key) async {
     try {
-      RenderRepaintBoundary boundary = key.currentContext!.findRenderObject() as RenderRepaintBoundary;
+      RenderRepaintBoundary boundary =
+          key.currentContext!.findRenderObject() as RenderRepaintBoundary;
       ui.Image capturedImage = await boundary.toImage(pixelRatio: 1);
-      ByteData? byteData = await capturedImage.toByteData(format: ui.ImageByteFormat.png);
+      ByteData? byteData =
+          await capturedImage.toByteData(format: ui.ImageByteFormat.png);
       GlobalKey<ScaffoldState> scaffoldKey = key as GlobalKey<ScaffoldState>;
       Uint8List originalImage = await captureScreenshot(scaffoldKey);
 
@@ -195,7 +208,8 @@ class _ContentListItemState extends State<ContentListItem> {
       print('Modified Image dimensions: ${modifiedImage.length}');
 
       String imagePath = await saveImageLocally(modifiedImage);
-      await Share.shareFiles([imagePath], text: 'formula of ${widget.contentItemModel.title}');
+      await Share.shareFiles([imagePath],
+          text: 'formula of ${widget.contentItemModel.title}');
     } catch (e) {
       print('Error capturing or sharing screenshot: $e');
     }
@@ -209,15 +223,14 @@ class _ContentListItemState extends State<ContentListItem> {
   }
 
   Future<void> checkIfBookMark() async {
-    isInBookmark = (await widget.dbHelper?.isInBookMark(widget.contentItemModel.id))!;
-
+    isInBookmark =
+        (await widget.dbHelper?.isInBookMark(widget.contentItemModel.id))!;
   }
 
   void requestStoragePermission() async {
-
     var status = await Permission.mediaLibrary.request();
     var status2 = await Permission.storage.request();
-    if (status.isGranted || status2.isGranted ) {
+    if (status.isGranted || status2.isGranted) {
       checkDebugPaint();
       print("Storage permission granted");
     } else if (status.isDenied || status2.isGranted) {
@@ -231,7 +244,7 @@ class _ContentListItemState extends State<ContentListItem> {
         fontSize: 16.0,
       );
       print("Storage permission denied");
-    } else if (status.isPermanentlyDenied || status2.isGranted ) {
+    } else if (status.isPermanentlyDenied || status2.isGranted) {
       Fluttertoast.showToast(
         msg: "Storage permission permanently denied",
         toastLength: Toast.LENGTH_SHORT,
@@ -245,6 +258,4 @@ class _ContentListItemState extends State<ContentListItem> {
       openAppSettings();
     }
   }
-
-
 }
