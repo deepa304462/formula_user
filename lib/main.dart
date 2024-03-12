@@ -2,11 +2,15 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:formula_user/presentation/subscription/bloc/subscription_bloc.dart';
+import 'package:formula_user/presentation/subscription/screen/subscription_page.dart';
 import 'package:formula_user/res/colours.dart';
 import 'package:formula_user/res/common.dart';
 import 'package:formula_user/screens/bottom_navigation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:formula_user/dependencyinjection/injection_container.dart' as ic;
 import 'package:video_player/video_player.dart';
@@ -26,9 +30,13 @@ Future main() async {
     ),
   );
   MobileAds.instance.initialize();
-  runApp(const MaterialApp(
+  runApp( MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: SplashScreen(),
+    home: MultiProvider(providers: [
+      BlocProvider<SubscriptionBloc>(
+        create: (_) => serviceLocator<SubscriptionBloc>(),
+      ),
+    ], child: SubscriptionPage()),
   ));
 }
 
