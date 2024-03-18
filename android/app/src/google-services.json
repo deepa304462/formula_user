@@ -102,6 +102,72 @@
     },
     {
       "client_info": {
+        "mobilesdk_app_id": "1:735367481552:android:e9fa19de4bdf262f75b6d5",
+        "android_client_info": {
+          "package_name": "com.math.formula"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "735367481552-tiq0nqu2eic0osqh1g01umgje2eddcok.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhcEMZ_oGAay0Z6u1iVZgg6eaRDzc1zAM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "735367481552-tiq0nqu2eic0osqh1g01umgje2eddcok.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:735367481552:android:d3e13e31c077951f75b6d5",
+        "android_client_info": {
+          "package_name": "com.mathformula.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "735367481552-25dee3hqtfnaiatdhis3u06eh2go6b9g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mathformula.app",
+            "certificate_hash": "e8972dee28df1f9b333205ba41ac53f87a63e756"
+          }
+        },
+        {
+          "client_id": "735367481552-tiq0nqu2eic0osqh1g01umgje2eddcok.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhcEMZ_oGAay0Z6u1iVZgg6eaRDzc1zAM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "735367481552-tiq0nqu2eic0osqh1g01umgje2eddcok.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:735367481552:android:45cbf259019cf9ff75b6d5",
         "android_client_info": {
           "package_name": "com.physics.formula_admin"

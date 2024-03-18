@@ -1,4 +1,4 @@
-package com.math.formula
+package com.mathformula.app
 
 import io.flutter.embedding.android.FlutterActivity
 
