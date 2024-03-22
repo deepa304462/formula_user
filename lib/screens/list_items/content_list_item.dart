@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
@@ -12,6 +11,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:formula_user/models/content_item_model.dart';
 import 'package:formula_user/res/db_helper.dart';
 import 'package:image/image.dart' as img;
+import 'package:marquee/marquee.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
@@ -19,13 +19,11 @@ import 'package:share_plus/share_plus.dart';
 import '../../models/favorite_model.dart';
 import '../../res/colours.dart';
 import '../../res/styles.dart';
-import '../../utilities.dart';
-import '../detailed_formula_screen.dart';
 
 class ContentListItem extends StatefulWidget {
   ContentItemModel contentItemModel;
   DBHelper? dbHelper;
-  ContentListItem(this.contentItemModel, this.dbHelper);
+  ContentListItem(this.contentItemModel, this.dbHelper, {super.key});
 
   @override
   State<ContentListItem> createState() => _ContentListItemState();
@@ -50,8 +48,88 @@ class _ContentListItemState extends State<ContentListItem> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
+              height: 40,
               decoration: BoxDecoration(
-                  color: Colours.titleBackground,
+                  color: Colours.itemCardBackground,
+                  borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(16),
+                      topRight: Radius.circular(16))),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 6.0,right: 6.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 12.0, top: 4.0),
+                        child: Marquee(
+                          text: widget.contentItemModel.title,
+                          style: Styles.textWith14(Colours.buttonColor2),
+                          scrollAxis: Axis.horizontal,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          blankSpace: 20.0,
+                          velocity: 100.0,
+                          startPadding: 10.0,
+                          accelerationDuration: const Duration(seconds: 1),
+                          accelerationCurve: Curves.easeInCirc,
+                          decelerationDuration: const Duration(milliseconds: 500),
+                          decelerationCurve: Curves.easeOut,
+                        ),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        if (isInBookmark) {
+                          widget.dbHelper!.deleteFromFavorite(
+                              widget.contentItemModel.id);
+                          setState(() {
+                            isInBookmark = false;
+                          });
+                        } else {
+                          widget.dbHelper!
+                              .insert(FavoriteModel(
+                            id: widget.contentItemModel.id,
+                            title: widget.contentItemModel.title,
+                            image: widget.contentItemModel.imageUrl,
+                            pdf: widget.contentItemModel.pdfUrl,
+                          ))
+                              .then((value) {
+                            setState(() {
+                              isInBookmark = true;
+                            });
+                          }).onError((error, stackTrace) {
+                            print(error.toString());
+                          });
+                        }
+                      },
+                      child: SvgPicture.asset(
+                        isInBookmark
+                            ? "assets/bookmark.svg"
+                            : "assets/bookmark_border.svg",
+                        width: 22,
+                        height: 22,
+                        color: Colours.white,
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        SchedulerBinding.instance.addPostFrameCallback((_) {
+                          requestStoragePermission();
+                        });
+                      },
+                      child: Padding(
+                          padding:
+                          const EdgeInsets.only(left: 2, right: 8.0),
+                          child: SvgPicture.asset("assets/share_icon.svg",
+                              width: 22, height: 22, color: Colours.white)),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            /*Container(
+              height: 40,
+              decoration: BoxDecoration(
+                  color: Colours.itemCardBackground,
                   borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(16),
                       topRight: Radius.circular(16))),
@@ -60,76 +138,74 @@ class _ContentListItemState extends State<ContentListItem> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Flexible(
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 8,top: 4,bottom: 4,right: 8),
-                      child: Center(
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                  textAlign: TextAlign.center,
-                                  maxLines: 5,
-                                  widget.contentItemModel.title,
-                                  style:
-                                      Styles.textWith18withBold(Colours.white)),
-                            ),
-                            InkWell(
-                              onTap: (){
-                                if (isInBookmark) {
-                                  widget.dbHelper!.deleteFromFavorite(
-                                      widget.contentItemModel.id);
-                                  setState(() {
-                                    isInBookmark = false;
-                                  });
-                                } else {
-                                  widget.dbHelper!
-                                      .insert(FavoriteModel(
-                                    id: widget.contentItemModel.id,
-                                    title: widget.contentItemModel.title,
-                                    image: widget.contentItemModel.imageUrl,
-                                    pdf: widget.contentItemModel.pdfUrl,
-                                  ))
-                                      .then((value) {
-                                    setState(() {
-                                      isInBookmark = true;
-                                    });
-                                  }).onError((error, stackTrace) {
-                                    print(error.toString());
-                                  });
-                                }
-                              },
-                              child: SvgPicture.asset(
-                               isInBookmark? "assets/bookmark.svg" : "assets/bookmark_border.svg",
-                                width: 30,
-                                height: 30,
-                                color: Colours.white,
-                              ),
-                            ),
-                          InkWell(
-                            onTap: (){
-                              SchedulerBinding.instance
-                                  .addPostFrameCallback((_) {
-                                requestStoragePermission();
-                              });
-                            },
-                            child: SvgPicture.asset(
-                                    "assets/share_icon.svg",
-                                    width: 30,
-                                    height: 30,
-
-                                  color: Colours.white),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 12.0),
+                            child: Text(
+                                textAlign: TextAlign.start,
+                                maxLines: 5,
+                                widget.contentItemModel.title,
+                                style: Styles.textWith14(Colours.buttonColor2)),
                           ),
-                          ],
                         ),
-                      ),
+                        InkWell(
+                          onTap: () {
+                            if (isInBookmark) {
+                              widget.dbHelper!.deleteFromFavorite(
+                                  widget.contentItemModel.id);
+                              setState(() {
+                                isInBookmark = false;
+                              });
+                            } else {
+                              widget.dbHelper!
+                                  .insert(FavoriteModel(
+                                id: widget.contentItemModel.id,
+                                title: widget.contentItemModel.title,
+                                image: widget.contentItemModel.imageUrl,
+                                pdf: widget.contentItemModel.pdfUrl,
+                              ))
+                                  .then((value) {
+                                setState(() {
+                                  isInBookmark = true;
+                                });
+                              }).onError((error, stackTrace) {
+                                print(error.toString());
+                              });
+                            }
+                          },
+                          child: SvgPicture.asset(
+                            isInBookmark
+                                ? "assets/bookmark.svg"
+                                : "assets/bookmark_border.svg",
+                            width: 20,
+                            height: 20,
+                            color: Colours.white,
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            SchedulerBinding.instance.addPostFrameCallback((_) {
+                              requestStoragePermission();
+                            });
+                          },
+                          child: Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 2, right: 8.0),
+                              child: SvgPicture.asset("assets/share_icon.svg",
+                                  width: 20, height: 20, color: Colours.white)),
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
-            ),
+            ),*/
             Container(
                 decoration: BoxDecoration(
-                    border: Border.all(color: Colors.indigo, width: 1),
+                    border:
+                        Border.all(color: Colours.itemCardBackground, width: 1),
                     borderRadius: const BorderRadius.only(
                         bottomLeft: Radius.circular(16),
                         bottomRight: Radius.circular(16))

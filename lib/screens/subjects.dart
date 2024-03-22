@@ -43,37 +43,50 @@ class _SubjectsState extends State<Subjects> {
             color: Colours.white
         ),
       ),
-      body: _isLoading?Center(child: CircularProgressIndicator(),) :ListView.builder(
-        itemCount: list.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Padding(
-              padding: const EdgeInsets.only(top: 2.0),
-              child: Container(
-                height: 50,
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                  color:Colours.listBackground ,
-                  borderRadius: BorderRadius.circular(6)
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 8.0,right: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(list[index].name,style: Styles.textWith14withBold(Colours.black)),
-                      Icon(Icons.arrow_circle_right_outlined,color: Colours.buttonColor2,size: 20,)
+      body: _isLoading?const Center(child: CircularProgressIndicator(),) :Padding(
+        padding: const EdgeInsets.only(top: 6.0),
+        child: ListView.builder(
+          itemCount: list.length,
+          itemBuilder: (context, index) {
+            return InkWell(
+              onTap: (){
+                pushToNewRoute(context, SubjectDetail(list[index], (){}));
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(left: 12,right: 12,top: 8,bottom: 8),
+                child: Container(
+                  height: 50,
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    color: Colours.listBackground,
+                    borderRadius: BorderRadius.circular(6),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.4),
+                        spreadRadius: 2,
+                        blurRadius: 3,
+                        offset: const Offset(0, 2), // changes position of shadow
+                      ),
                     ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8.0, right: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 4.0),
+                          child: Text(list[index].name, style: Styles.textWith14withBold(Colours.black)),
+                        ),
+                        Icon(Icons.arrow_circle_right_outlined, color: Colours.buttonColor2, size: 20,)
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            onTap: () {
-              pushToNewRoute(context,SubjectDetail(list[index], (){}));
-
-            },
-          );
-        },
+            );
+          },
+        ),
       )
     );
   }

@@ -24,9 +24,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
-
-   String testDevice = 'YOUR_DEVICE_ID';
-   int maxFailedLoadAttempts = 3;
+  String testDevice = 'YOUR_DEVICE_ID';
+  int maxFailedLoadAttempts = 3;
   final db = FirebaseFirestore.instance;
   List<TabModel> list = [];
 
@@ -36,10 +35,9 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
-    getData();// Start fetching data
+    getData(); // Start fetching data
     MobileAds.instance.updateRequestConfiguration(
         RequestConfiguration(testDeviceIds: [testDevice]));
-
   }
 
   Future<void> getData() async {
@@ -78,126 +76,138 @@ class _HomePageState extends State<HomePage>
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        toolbarHeight: 40,
-        title: Text("Mathematics",
-            style: Styles.textWith18withBold(Colours.white)),
+        toolbarHeight: 30,
+        title: Padding(
+          padding: const EdgeInsets.only(right: 6.0,top: 6.0),
+          child: Text("Mathematics",
+              style: Styles.textWith18withBold(Colours.white)),
+        ),
         backgroundColor: Colours.buttonColor2,
         actions: [
           IconButton(
-            icon: Image.asset('assets/prime.png',color: Colors.white,),
+            icon: Image.asset(
+              'assets/prime.png',
+              color: Colors.white,
+            ),
             onPressed: () {
               pushToNewRoute(context, const BecomePrimeMember());
             },
           ),
-        Common.isLogin?IconButton(
-            icon: Icon(Icons.logout, color: Colours.white),
-            onPressed: () {
-              _signOut();
-            },
-          ):Container(),
-
+          Common.isLogin
+              ? IconButton(
+                  icon: Icon(Icons.logout, color: Colours.white),
+                  onPressed: () {
+                    _signOut();
+                  },
+                )
+              : Container(),
         ],
       ),
       body: DefaultTabController(
           length: list.length,
-          child: _isLoading?const Center(child: CircularProgressIndicator(),):NestedScrollView(
-              headerSliverBuilder: (context, value) {
-                return [
-                  SliverAppBar(
-                    backgroundColor: Colours.buttonColor2,
-                    floating: true,
-                    pinned: true,
-                    snap: true,
-                    title: InkWell(
-                      onTap: () {
-                        pushToNewRoute(context, const SearchBarScreen());
-                      },
-                      child: Container(
-                        height: 32,
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                            color: Colors.grey.shade200,
-                            borderRadius: BorderRadius.circular(12)),
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 8),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              const Icon(
-                                Icons.search,
-                                color: Colors.black26,
+          child: _isLoading
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : NestedScrollView(
+                  headerSliverBuilder: (context, value) {
+                    return [
+                      SliverAppBar(
+                        backgroundColor: Colours.buttonColor2,
+                        floating: true,
+                        pinned: true,
+                        snap: true,
+                        toolbarHeight: 50,
+                        flexibleSpace: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 8.0, left: 6.0, right: 6.0),
+                          child: InkWell(
+                            onTap: () {
+                              pushToNewRoute(context, const SearchBarScreen());
+                            },
+                            child: Container(
+                              height: 38,
+                              width: MediaQuery.of(context).size.width,
+                              decoration: BoxDecoration(
+                                  color: Colors.grey.shade200,
+                                  borderRadius: BorderRadius.circular(8)),
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 8),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    const Icon(
+                                      Icons.search,
+                                      color: Colors.black26,
+                                    ),
+                                    const SizedBox(
+                                      width: 8,
+                                    ),
+                                    Text(
+                                      "Search here",
+                                      style: Styles.textWith14withBold(
+                                          Colours.greyLight700),
+                                    ),
+                                  ],
+                                ),
                               ),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              Text(
-                                "Search here",
-                                style: Styles.textWith14withBold(
-                                    Colours.greyLight700),
-                              ),
-                            ],
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                    bottom: PreferredSize(
-                      preferredSize: const Size.square(50) ,
-                      child: Material(
-                        color: Colours.listBackground,
-                        child: TabBar(
-                            controller: _tabController,
-                            isScrollable: true,
-                            labelColor: Colors.pinkAccent,
-                            labelStyle: Styles.textWith14withBold(Colours.buttonColor2),
-                            indicatorColor: Colors.pinkAccent,
-                            indicatorSize: TabBarIndicatorSize.label,
-                            tabs: List.generate(
-                                list.length,
-                                (index) => Row(
-                                  children: [
-                                    Container(
-                                      height: 30,
-                                      width: 1.5,
-                                      decoration: BoxDecoration(
-                                        color: Colours.greyLight
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 20,
-                                    ),
-                                    Tab(
-                                          text: list[index].name,
-                                        ),
-
-                                  ],
-                                )
-                            )
+                        bottom: PreferredSize(
+                          preferredSize: const Size.square(50),
+                          child: Material(
+                            color: Colours.listBackground,
+                            child: TabBar(
+                                controller: _tabController,
+                                isScrollable: true,
+                                labelColor: Colors.pinkAccent,
+                                labelStyle: Styles.textWith14withBold(
+                                    Colours.buttonColor2),
+                                indicatorColor: Colors.pinkAccent,
+                                indicatorSize: TabBarIndicatorSize.label,
+                                tabs: List.generate(
+                                    list.length,
+                                    (index) => Row(
+                                          children: [
+                                            Container(
+                                              height: 30,
+                                              width: 1.5,
+                                              decoration: BoxDecoration(
+                                                  color: Colours.greyLight),
+                                            ),
+                                            const SizedBox(
+                                              width: 20,
+                                            ),
+                                            Tab(
+                                              text: list[index].name,
+                                            ),
+                                          ],
+                                        ))),
+                          ),
                         ),
-                      ),
-                    ),
-                  )
-                ];
-              },
-              body: list.isEmpty
-                  ? Container()
-                  : DefaultTabController(
-                      length: list.length, // length of tabs
-                      initialIndex: 0,
-                      child:_isLoading?const Center(child: CircularProgressIndicator(),): TabBarView(
-                        controller: _tabController,
-                        children: List.generate(
-                            list.length,
-                            (index) => TabContents(list[index], () {
-                                  pushToNewRouteAndClearAll(
-                                      context, const HomePage());
-                                }
+                      )
+                    ];
+                  },
+                  body: list.isEmpty
+                      ? Container()
+                      : DefaultTabController(
+                          length: list.length, // length of tabs
+                          initialIndex: 0,
+                          child: _isLoading
+                              ? const Center(
+                                  child: CircularProgressIndicator(),
                                 )
-                        ),
-
-                      ),
-                    )
-          )
-      ),
+                              : TabBarView(
+                                  controller: _tabController,
+                                  children: List.generate(
+                                      list.length,
+                                      (index) => TabContents(list[index], () {
+                                            pushToNewRouteAndClearAll(
+                                                context, const HomePage());
+                                          })),
+                                ),
+                        ))),
     );
   }
 
@@ -213,9 +223,4 @@ class _HomePageState extends State<HomePage>
       pushToNewRouteAndClearAll(context, const LoginPage());
     }
   }
-
-
-   }
-
-
-
+}

@@ -78,7 +78,7 @@ class _TabContentsState extends State<TabContents> {
                     );
                   },
                   body: Padding(
-                    padding: EdgeInsets.only(left: 12, right: 12),
+                    padding: const EdgeInsets.only(left: 12, right: 12),
                     child: ContentList(item, ),
                   ),
                   isExpanded: item.isExpanded,
@@ -118,7 +118,7 @@ class _TabContentsState extends State<TabContents> {
 
       list.sort((a, b) => a.index.compareTo(b.index));
 
-      list[0].isExpanded = true;
+      //list[0].isExpanded = true;
 
       // Debugging: Print contents of list after sorting
       print('After sorting: $list');

@@ -29,6 +29,10 @@ class Styles {
     return GoogleFonts.cardo(color: color, fontSize: 18, fontWeight: FontWeight.bold);
   }
 
+  static TextStyle textWith18(Color color) {
+    return GoogleFonts.cardo(color: color, fontSize: 18);
+  }
+
   static TextStyle textWith12(Color color) {
     return GoogleFonts.cardo(
       color: color,
@@ -40,6 +44,7 @@ class Styles {
     return GoogleFonts.cardo(
       color: color,
       fontSize: 14,
+      letterSpacing: 0,
     );
   }
 

@@ -19,6 +19,8 @@ class Colours {
   static Color listBackground = fromHex("#EEECFE");
   static Color titleBackground = fromHex("#5A918C");
 
+  static Color itemCardBackground = fromHex("#579088");
+
 
 
   static Color fromHex(String hexString) {
