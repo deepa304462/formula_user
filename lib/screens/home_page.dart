@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:formula_user/res/common.dart';
 import 'package:formula_user/res/styles.dart';
 import 'package:formula_user/screens/prime_member.dart';
+import 'package:formula_user/screens/screen_example.dart';
+import 'package:formula_user/screens/subscription_purchase_screen.dart';
 import 'package:formula_user/screens/search_bar_screen.dart';
 import 'package:formula_user/screens/tab_contents.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -79,7 +81,7 @@ class _HomePageState extends State<HomePage>
         toolbarHeight: 30,
         title: Padding(
           padding: const EdgeInsets.only(right: 6.0,top: 6.0),
-          child: Text("Mathematics",
+          child: Text("Mathematics ${Common.isPrime ? "Prime" : ""}",
               style: Styles.textWith18withBold(Colours.white)),
         ),
         backgroundColor: Colours.buttonColor2,
@@ -90,7 +92,7 @@ class _HomePageState extends State<HomePage>
               color: Colors.white,
             ),
             onPressed: () {
-              pushToNewRoute(context, const BecomePrimeMember());
+              pushToNewRoute(context, const SubscriptionPurchaseScreen());
             },
           ),
           Common.isLogin

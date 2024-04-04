@@ -153,7 +153,7 @@ class _LoginPageState extends State<LoginPage> {
         Common.isPrime = true;
       }else{
         prefs.setBool('isPrimeMember', false);
-        Common.isPrime = false;
+
       }
       Common.isLogin = true;
       pushToNewRouteAndClearAll(context, MyBottomNavigation());
