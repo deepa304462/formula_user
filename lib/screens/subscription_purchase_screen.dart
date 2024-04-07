@@ -10,7 +10,7 @@ class SubscriptionPurchaseScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Provider.of<SubscriptionManager>(context, listen: false)
-        .fetchAllSubscriptionsFromFirebase();
+        .fetchAllSubscriptionsFromFirebase(context);
 
     return Scaffold(
       appBar: AppBar(
