@@ -1,12 +1,13 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:formula_user/screens/about_screen.dart';
 import 'package:formula_user/screens/book_mark_scree.dart';
 import 'package:formula_user/screens/subjects.dart';
+import 'package:provider/provider.dart';
 
 import '../res/colours.dart';
 import '../res/styles.dart';
+import '../subscription_manager.dart';
 import 'home_page.dart';
 
 class MyBottomNavigation extends StatefulWidget {
@@ -20,10 +21,10 @@ class _MyBottomNavigationState extends State<MyBottomNavigation> {
   int _selectedIndex = 0;
 
   final List<Widget> _pages = [
-    HomePage(),
+    const HomePage(),
     Subjects(),
-    BookMarksScreen(),
-    AboutScreen()
+    const BookMarksScreen(),
+    const AboutScreen()
   ];
 
   void _onItemTapped(int index) {
@@ -31,6 +32,7 @@ class _MyBottomNavigationState extends State<MyBottomNavigation> {
       _selectedIndex = index;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,30 +44,44 @@ class _MyBottomNavigationState extends State<MyBottomNavigation> {
         selectedFontSize: 14,
         selectedLabelStyle: Styles.textWith14(Colours.white),
         unselectedLabelStyle: Styles.textWith14(Colours.black),
-        items:  <BottomNavigationBarItem>[
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: SvgPicture.asset("assets/homepage.svg",color: Colours.gret500,),
+            icon: SvgPicture.asset(
+              "assets/homepage.svg",
+              color: Colours.gret500,
+            ),
             label: 'Homepage',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.subject,color: Colours.gret500,size: 20,),
+            icon: Icon(
+              Icons.subject,
+              color: Colours.gret500,
+              size: 20,
+            ),
             label: 'Subjects',
           ),
           BottomNavigationBarItem(
-            icon:SvgPicture.asset("assets/bookmark.svg",color:Colours.gret500,),
+            icon: SvgPicture.asset(
+              "assets/bookmark.svg",
+              color: Colours.gret500,
+            ),
             label: 'Book Marks',
           ),
           BottomNavigationBarItem(
-            icon:SvgPicture.asset("assets/about.svg",color: Colours.gret500,width: 20,height: 20,),
+            icon: SvgPicture.asset(
+              "assets/about.svg",
+              color: Colours.gret500,
+              width: 20,
+              height: 20,
+            ),
             label: 'About',
           ),
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colours.white,
-        unselectedItemColor:Colours.gret500,
+        unselectedItemColor: Colours.gret500,
         onTap: _onItemTapped,
       ),
     );
   }
-
 }
