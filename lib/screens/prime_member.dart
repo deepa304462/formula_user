@@ -32,118 +32,108 @@ class _BecomePrimeMemberState extends State<BecomePrimeMember> {
         ),
         body: Common.isPrime
             ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Yooo!!! you already a prime member \nenjoy the formulas with solution 😃",
-                    style: Styles.textWith18withBold(Colours.greyLight700),
-                    maxLines: 40,
-                  ),
-                 ElevatedButton(
-                   style: ButtonStyle(
-                     backgroundColor: MaterialStatePropertyAll(
-                         Colours.buttonColor2
-                     ),
-                     fixedSize: const MaterialStatePropertyAll(
-                       Size(
-                         300,
-                         40
-                       )
-                     )
-                   ),
-                   onPressed: (){},
-                     child: Text("Monthly @49 Rs.",style: Styles.textWith18withBold(Colours.white),)
-                 ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  ElevatedButton(
-                      style: ButtonStyle(
-                          backgroundColor: MaterialStatePropertyAll(
-                              Colours.buttonColor1
-                          ),
-                          fixedSize: const MaterialStatePropertyAll(
-                              Size(
-                                  300,
-                                  40
-                              )
-                          )
-                      ),
-                      onPressed: (){},
-                      child: Text("Six Month @249 Rs.",style: Styles.textWith18withBold(Colours.white),)
-                  ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  ElevatedButton(
-                      style: ButtonStyle(
-                          backgroundColor: MaterialStatePropertyAll(
-                              Colours.buttonColor2
-                          ),
-                          fixedSize: const MaterialStatePropertyAll(
-                              Size(
-                                  300,
-                                  40
-                              )
-                          )
-                      ),
-                      onPressed: (){},
-                      child: Text("Yearly @549 Rs.",style: Styles.textWith18withBold(Colours.white),)
-                  ),
-                ],
-              ))
-            : Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      Common.isLogin
-                          ? "Click here to become prime member !!!"
-                          : "Click here to Login",
-                      style: Styles.textWith18withBold500(Colours.black),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    ElevatedButton.icon(
-                        onPressed: () {
-                          if (Common.isLogin) {
-                            updateSubscription();
-                          } else {
-                            pushToNewRouteAndClearAll(
-                                context, const LoginPage());
-                          }
-
-                          //SignInWithGoogle();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          primary: Colours.buttonColor2,
-                          onPrimary: Colors.black,
-                          minimumSize: const Size(300, 40),
-                        ),
-                        icon: Image.asset(
-                          "assets/prime.png",
-                          color: Colors.white,
-                          height: 24,
-                          width: 24,
-                        ),
-                        label: Text(
-                          Common.isLogin
-                              ? 'Take Subscription'
-                              : "Login to take Subscription",
-                          style: Styles.textWith16bold(Colours.white),
-                        )),
-                  ],
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Yooo!!! you already a prime member \nenjoy the formulas with solution 😃",
+                  style: Styles.textWith18withBold(Colours.greyLight700),
+                  maxLines: 40,
                 ),
-              ));
+                ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStatePropertyAll(
+                            Colours.buttonColor2
+                        ),
+                        fixedSize: const MaterialStatePropertyAll(
+                            Size(
+                                300,
+                                40
+                            )
+                        )
+                    ),
+                    onPressed: (){},
+                    child: Text("Monthly @49 Rs.",style: Styles.textWith18withBold(Colours.white),)
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
+                ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStatePropertyAll(
+                            Colours.buttonColor1
+                        ),
+                        fixedSize: const MaterialStatePropertyAll(
+                            Size(
+                                300,
+                                40
+                            )
+                        )
+                    ),
+                    onPressed: (){},
+                    child: Text("Six Month @249 Rs.",style: Styles.textWith18withBold(Colours.white),)
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
+                ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStatePropertyAll(
+                            Colours.buttonColor2
+                        ),
+                        fixedSize: const MaterialStatePropertyAll(
+                            Size(
+                                300,
+                                40
+                            )
+                        )
+                    ),
+                    onPressed: (){},
+                    child: Text("Yearly @549 Rs.",style: Styles.textWith18withBold(Colours.white),)
+                ),
+              ],
+            ))
+            : Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("Click here to become prime member !!!",
+                style: Styles.textWith18withBold500(Colours.black),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              ElevatedButton.icon(
+                  onPressed: () {
+                    //SignInWithGoogle();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: Colours.buttonColor2,
+                    onPrimary: Colors.black,
+                    minimumSize: const Size(300, 40),
+                  ),
+                  icon: Image.asset(
+                    "assets/prime.png",
+                    color: Colors.white,
+                    height: 24,
+                    width: 24,
+                  ),
+                  label: Text(
+                    Common.isLogin
+                        ? 'Take Subscription'
+                        : "Login to take Subscription",
+                    style: Styles.textWith16bold(Colours.white),
+                  )),
+            ],
+          ),
+        ));
   }
 
   updateSubscription() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       CollectionReference users =
-          FirebaseFirestore.instance.collection('users');
+      FirebaseFirestore.instance.collection('users');
 
       await users
           .doc(prefs.getString('userId'))

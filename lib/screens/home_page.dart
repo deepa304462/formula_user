@@ -4,11 +4,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:formula_user/res/common.dart';
 import 'package:formula_user/res/styles.dart';
-import 'package:formula_user/screens/prime_member.dart';
+import 'package:formula_user/screens/subscription_purchase_screen.dart';
 import 'package:formula_user/screens/search_bar_screen.dart';
 import 'package:formula_user/screens/tab_contents.dart';
+import 'package:formula_user/subscription_manager.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/tab_model.dart';
 import '../res/colours.dart';
@@ -77,10 +79,14 @@ class _HomePageState extends State<HomePage>
       appBar: AppBar(
         elevation: 0,
         toolbarHeight: 30,
-        title: Padding(
-          padding: const EdgeInsets.only(right: 6.0,top: 6.0),
-          child: Text("Mathematics",
-              style: Styles.textWith18withBold(Colours.white)),
+        title: ChangeNotifierProvider(
+          create: (_) => SubscriptionManager(),
+          child: Padding(
+            padding: const EdgeInsets.only(right: 6.0, top: 6.0),
+            child: Text(
+                "Mathematics ${Provider.of<SubscriptionManager>(context).isPrimeMember(context) ? "Prime" : ""}",
+                style: Styles.textWith18withBold(Colours.white)),
+          ),
         ),
         backgroundColor: Colours.buttonColor2,
         actions: [
@@ -90,7 +96,7 @@ class _HomePageState extends State<HomePage>
               color: Colors.white,
             ),
             onPressed: () {
-              pushToNewRoute(context, const BecomePrimeMember());
+              pushToNewRoute(context,  SubscriptionPurchaseScreen());
             },
           ),
           Common.isLogin
