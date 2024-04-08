@@ -19,6 +19,15 @@ class BecomePrimeMember extends StatefulWidget {
 }
 
 class _BecomePrimeMemberState extends State<BecomePrimeMember> {
+  int _currentPage = 0;
+  final PageController _pageController = PageController();
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,110 +39,481 @@ class _BecomePrimeMemberState extends State<BecomePrimeMember> {
           backgroundColor: Colours.buttonColor2,
           iconTheme: IconThemeData(color: Colours.white),
         ),
-        body: Common.isPrime
-            ? Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+        body: Stack(
+          children: [
+            PageView(
+              controller: _pageController,
+              onPageChanged: (int page) {
+                setState(() {
+                  _currentPage = page;
+                });
+              },
               children: [
-                Text(
-                  "Yooo!!! you already a prime member \nenjoy the formulas with solution 😃",
-                  style: Styles.textWith18withBold(Colours.greyLight700),
-                  maxLines: 40,
-                ),
-                ElevatedButton(
-                    style: ButtonStyle(
-                        backgroundColor: MaterialStatePropertyAll(
-                            Colours.buttonColor2
-                        ),
-                        fixedSize: const MaterialStatePropertyAll(
-                            Size(
-                                300,
-                                40
-                            )
-                        )
+                Padding(
+                  padding: const EdgeInsets.only(left: 24,right: 24,bottom: 200,top: 24),
+                  child: Card(
+                    elevation: 8,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colours.planBackgroundColour,
+                        borderRadius: BorderRadius.circular(12)
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Image.asset("assets/calender_icon.png",height: 100,width: 100,),
+                          const SizedBox(
+                            height: 12,
+                          ),
+                          Text("1 Month Plan",style: Styles.textWith20withBold(Colours.buttonColor1),),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text("₹49 Month Plan",style: Styles.textWith20withBold500(Colours.white),),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8,top: 24),
+                                child: Text("/1 months",style: Styles.textWith12(Colours.white),),
+                              )
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 12,left: 30),
+                            child: Row(
+                              children: [
+                                Container(
+                                  height: 8,
+                                  width: 8,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12),
+                                    color: Colours.buttonColor1
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                Text("Premium Study Material",style: Styles.textWith12(Colours.white),),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4,left: 30),
+                            child: Row(
+                              children: [
+                                Container(
+                                  height: 8,
+                                  width: 8,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      color: Colours.buttonColor1
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                Text("Read Offline",style: Styles.textWith12(Colours.white),),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4,left: 30),
+                            child: Row(
+                              children: [
+                                Container(
+                                  height: 8,
+                                  width: 8,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      color: Colours.buttonColor1
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                Text("Ad free",style: Styles.textWith12(Colours.white),),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4,left: 30),
+                            child: Row(
+                              children: [
+                                Container(
+                                  height: 8,
+                                  width: 8,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      color: Colours.buttonColor1
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                Text("Plan activate instantly",style: Styles.textWith12(Colours.white),),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          ElevatedButton(
+                              style: ButtonStyle(
+                                  fixedSize: const MaterialStatePropertyAll(
+                                      Size(
+                                          175,45
+                                      )
+                                  ),
+                                  shape: MaterialStatePropertyAll(
+                                      RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(12)
+                                      )
+                                  ),
+                                backgroundColor: MaterialStatePropertyAll(
+                                  Colours.buttonColor1
+                                )
+                              ),
+                              onPressed: (){},
+                              child: Text("Buy",style: Styles.textWith18withBold(Colours.white),))
+                        ],
+                      ),
                     ),
-                    onPressed: (){},
-                    child: Text("Monthly @49 Rs.",style: Styles.textWith18withBold(Colours.white),)
+                  ),
                 ),
-                const SizedBox(
-                  height: 12,
-                ),
-                ElevatedButton(
-                    style: ButtonStyle(
-                        backgroundColor: MaterialStatePropertyAll(
-                            Colours.buttonColor1
-                        ),
-                        fixedSize: const MaterialStatePropertyAll(
-                            Size(
-                                300,
-                                40
-                            )
-                        )
+                Padding(
+                  padding: const EdgeInsets.only(left: 24,right: 24,bottom: 200,top: 24),
+                  child: Card(
+                    elevation: 8,
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Colours.planBackgroundColour,
+                          borderRadius: BorderRadius.circular(12)
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Image.asset("assets/calender_icon.png",height: 100,width: 100,),
+                          const SizedBox(
+                            height: 12,
+                          ),
+                          Text("6 Month Plan",style: Styles.textWith20withBold(Colours.buttonColor1),),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text("₹199 Month Plan",style: Styles.textWith20withBold500(Colours.white),),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8,top: 24),
+                                child: Text("/6 months",style: Styles.textWith12(Colours.white),),
+                              )
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 12,left: 30),
+                            child: Row(
+                              children: [
+                                Container(
+                                  height: 8,
+                                  width: 8,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      color: Colours.buttonColor1
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                Text("Premium Study Material",style: Styles.textWith12(Colours.white),),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4,left: 30),
+                            child: Row(
+                              children: [
+                                Container(
+                                  height: 8,
+                                  width: 8,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      color: Colours.buttonColor1
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                Text("Read Offline",style: Styles.textWith12(Colours.white),),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4,left: 30),
+                            child: Row(
+                              children: [
+                                Container(
+                                  height: 8,
+                                  width: 8,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      color: Colours.buttonColor1
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                Text("Ad free",style: Styles.textWith12(Colours.white),),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4,left: 30),
+                            child: Row(
+                              children: [
+                                Container(
+                                  height: 8,
+                                  width: 8,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      color: Colours.buttonColor1
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                Text("Plan activate instantly",style: Styles.textWith12(Colours.white),),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          ElevatedButton(
+                              style: ButtonStyle(
+                                  fixedSize: const MaterialStatePropertyAll(
+                                      Size(
+                                          175,45
+                                      )
+                                  ),
+                                  shape: MaterialStatePropertyAll(
+                                      RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(12)
+                                      )
+                                  ),
+                                  backgroundColor: MaterialStatePropertyAll(
+                                      Colours.buttonColor1
+                                  )
+                              ),
+                              onPressed: (){},
+                              child: Text("Buy",style: Styles.textWith18withBold(Colours.white),))
+                        ],
+                      ),
                     ),
-                    onPressed: (){},
-                    child: Text("Six Month @249 Rs.",style: Styles.textWith18withBold(Colours.white),)
+                  ),
                 ),
-                const SizedBox(
-                  height: 12,
-                ),
-                ElevatedButton(
-                    style: ButtonStyle(
-                        backgroundColor: MaterialStatePropertyAll(
-                            Colours.buttonColor2
-                        ),
-                        fixedSize: const MaterialStatePropertyAll(
-                            Size(
-                                300,
-                                40
-                            )
-                        )
+                Padding(
+                  padding: const EdgeInsets.only(left: 24,right: 24,bottom: 200,top: 24),
+                  child: Card(
+                    elevation: 8,
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Colours.planBackgroundColour,
+                          borderRadius: BorderRadius.circular(12)
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Image.asset("assets/calender_icon.png",height: 100,width: 100,),
+                          const SizedBox(
+                            height: 12,
+                          ),
+                          Text("1 Year Plan",style: Styles.textWith20withBold(Colours.buttonColor1),),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text("₹349 Yearly Plan",style: Styles.textWith20withBold500(Colours.white),),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8,top: 24),
+                                child: Text("/12 months",style: Styles.textWith12(Colours.white),),
+                              )
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 12,left: 30),
+                            child: Row(
+                              children: [
+                                Container(
+                                  height: 8,
+                                  width: 8,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      color: Colours.buttonColor1
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                Text("Premium Study Material",style: Styles.textWith12(Colours.white),),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4,left: 30),
+                            child: Row(
+                              children: [
+                                Container(
+                                  height: 8,
+                                  width: 8,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      color: Colours.buttonColor1
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                Text("Read Offline",style: Styles.textWith12(Colours.white),),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4,left: 30),
+                            child: Row(
+                              children: [
+                                Container(
+                                  height: 8,
+                                  width: 8,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      color: Colours.buttonColor1
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                Text("Ad free",style: Styles.textWith12(Colours.white),),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4,left: 30),
+                            child: Row(
+                              children: [
+                                Container(
+                                  height: 8,
+                                  width: 8,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      color: Colours.buttonColor1
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                Text("Plan activate instantly",style: Styles.textWith12(Colours.white),),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          ElevatedButton(
+                              style: ButtonStyle(
+                                  fixedSize: const MaterialStatePropertyAll(
+                                      Size(
+                                          175,45
+                                      )
+                                  ),
+                                  shape: MaterialStatePropertyAll(
+                                      RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(12)
+                                      )
+                                  ),
+                                  backgroundColor: MaterialStatePropertyAll(
+                                      Colours.buttonColor1
+                                  )
+                              ),
+                              onPressed: (){},
+                              child: Text("Buy",style: Styles.textWith18withBold(Colours.white),))
+                        ],
+                      ),
                     ),
-                    onPressed: (){},
-                    child: Text("Yearly @549 Rs.",style: Styles.textWith18withBold(Colours.white),)
+                  ),
                 ),
+
               ],
-            ))
-            : Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text("Click here to become prime member !!!",
-                style: Styles.textWith18withBold500(Colours.black),
+            ),
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 170,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(
+                  3, // Number of dots (change according to the number of slides)
+                      (index) => Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 4),
+                        width: 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: _currentPage == index ? Colours.buttonColor1 : Colours.buttonColor2, // Active dot color
+                        ),
+                      ),
+                ),
               ),
-              const SizedBox(
-                height: 20,
-              ),
-              ElevatedButton.icon(
-                  onPressed: () {
-                    //SignInWithGoogle();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    primary: Colours.buttonColor2,
-                    onPrimary: Colors.black,
-                    minimumSize: const Size(300, 40),
+            ),
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 60,
+              child: Column(
+                children: [
+                  Text("You can join 7 days free trial",style: Styles.textWith16(Colours.black),),
+                  const SizedBox(
+                    height: 10,
                   ),
-                  icon: Image.asset(
-                    "assets/prime.png",
-                    color: Colors.white,
-                    height: 24,
-                    width: 24,
-                  ),
-                  label: Text(
-                    Common.isLogin
-                        ? 'Take Subscription'
-                        : "Login to take Subscription",
-                    style: Styles.textWith16bold(Colours.white),
-                  )),
-            ],
-          ),
+                  ElevatedButton(
+                      style: ButtonStyle(
+                          fixedSize: const MaterialStatePropertyAll(
+                              Size(
+                                  175,35
+                              )
+                          ),
+                          shape: MaterialStatePropertyAll(
+                              RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50)
+                              )
+                          ),
+                          backgroundColor: MaterialStatePropertyAll(
+                              Colours.buttonColor1
+                          ),
+                        side: MaterialStatePropertyAll(
+                          BorderSide(
+                            color: Colours.buttonColor2,
+                            width: 0.5
+                          )
+                        )
+                      ),
+                      onPressed: (){},
+                      child: Text("Try now",style: Styles.textWith18withBold(Colours.white),))
+                ],
+              )
+            ),
+          ],
         ));
   }
 
-  updateSubscription() async {
+ /* updateSubscription() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       CollectionReference users =
-      FirebaseFirestore.instance.collection('users');
+          FirebaseFirestore.instance.collection('users');
 
       await users
           .doc(prefs.getString('userId'))
@@ -162,8 +542,8 @@ class _BecomePrimeMemberState extends State<BecomePrimeMember> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                /*Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (_) => const SplashScreen()));*/
+                *//*Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (_) => const SplashScreen()));*//*
               },
               child: Text(
                 'Close',
@@ -174,5 +554,5 @@ class _BecomePrimeMemberState extends State<BecomePrimeMember> {
         );
       },
     );
-  }
+  }*/
 }

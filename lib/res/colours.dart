@@ -5,6 +5,7 @@ class Colours {
   static Color buttonColor1 = fromHex('#FA5C49');
   static Color white = Colors.white;
   static Color white1 = fromHex("#E9EFF8");
+  static Color planBackgroundColour = fromHex("#0C1939");
   static Color buttonColor2 = fromHex("#0F0F26");
   static Color white3 = fromHex("#EFEFEF");
   static Color shadeColour = fromHex("#EEF3F6");

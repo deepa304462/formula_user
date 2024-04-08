@@ -96,7 +96,7 @@ class _HomePageState extends State<HomePage>
               color: Colors.white,
             ),
             onPressed: () {
-              pushToNewRoute(context,  SubscriptionPurchaseScreen());
+              pushToNewRoute(context,  const SubscriptionPurchaseScreen());
             },
           ),
           Common.isLogin
