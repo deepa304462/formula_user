@@ -43,7 +43,7 @@ class _ContentListState extends State<ContentList> {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: (isPrimeUser ? list.length  : list.length + (list.length ~/ 4)),
+      itemCount: (isPrimeUser ? list.length : list.length + (list.length ~/ (Common.adDisplayInterval + 1))),
       itemBuilder: (BuildContext context, int index) {
         if(isPrimeUser){
           return Container(
@@ -55,20 +55,21 @@ class _ContentListState extends State<ContentList> {
               ),
               child: ContentListItem(list[index],dbHelper,));
         }else{
-          if (!isPrimeUser && index % 4 == 3) {
-            // Ads are available, show the ad widget at this index
+          if (!isPrimeUser && (index + 1) % (Common.adDisplayInterval + 1) == 0) {
+            // Ads are available, show the ad widget after every specified interval
             return const BannerAdWidget();
           } else {
             // Adjusted index to account for the inserted widgets
-            final adjustedIndex = !isPrimeUser ? index - (index ~/ 4) : index;
+            final adjustedIndex = !isPrimeUser ? index - (index ~/ (Common.adDisplayInterval + 1)) : index;
             return Container(
                 decoration: const BoxDecoration(
                     image: DecorationImage(
-                        image:AssetImage("assets/app_background.png"),
+                        image: AssetImage("assets/app_background.png"),
                         fit: BoxFit.fill
                     )
                 ),
-                child: ContentListItem(list[adjustedIndex],dbHelper,));
+                child: ContentListItem(list[adjustedIndex], dbHelper,)
+            );
           }
         }
       },

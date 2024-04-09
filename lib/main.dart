@@ -56,15 +56,20 @@ class _SplashScreenState extends State<SplashScreen> {
         });
       });
     });
-
     Future.delayed(const Duration(seconds: 6), () {
       getLogInValue();
     });
   }
 
+  bool isRunning = false;
+
   @override
   Widget build(BuildContext context) {
-    Provider.of<SubscriptionManager>(context, listen: true).initializeInAppPurchasesForPrimeCheck();
+    if(!isRunning){
+      isRunning = true;
+      Provider.of<SubscriptionManager>(context).fetchSettingsFromFirestore();
+      Provider.of<SubscriptionManager>(context, listen: true).initializeInAppPurchasesForPrimeCheck();
+    }
     return Scaffold(
       backgroundColor: Colours.transparent,
       body: _visible

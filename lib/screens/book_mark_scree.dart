@@ -91,7 +91,7 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
                               children: [
                                 Container(
                                   decoration:  BoxDecoration(
-                                    borderRadius: BorderRadius.only(
+                                    borderRadius: const BorderRadius.only(
                                       topLeft: Radius.circular(16),
                                       topRight: Radius.circular(16),
                                     ),

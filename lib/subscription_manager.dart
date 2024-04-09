@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:formula_user/res/colours.dart';
+import 'package:formula_user/res/common.dart';
 import 'package:formula_user/res/styles.dart';
 import 'package:provider/provider.dart';
 
@@ -18,6 +19,25 @@ class SubscriptionManager extends ChangeNotifier {
   List<SubscriptionListModel> subscriptionsUIList = [];
   bool get isPrime => _isPrime;
   bool get isLoading => _isLoading;
+  int adDisplayInterval = 2;
+
+
+
+  Future<void> fetchSettingsFromFirestore() async {
+    try {
+      DocumentSnapshot settingsDoc =
+      await FirebaseFirestore.instance.collection('settings').doc('general').get();
+      if (settingsDoc.exists) {
+        Common.adDisplayInterval = settingsDoc['adDisplayInterval'] ?? adDisplayInterval;
+        print("Common.adDisplayInterval");
+        print(Common.adDisplayInterval);
+        print("Common.adDisplayInterval");
+        notifyListeners();
+      }
+    } catch (error) {
+      print('Error fetching settings from Firestore: $error');
+    }
+  }
 
   Future<void> initializeInAppPurchasesForPrimeCheck() async {
     try {

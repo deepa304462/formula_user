@@ -4,9 +4,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:formula_user/screens/subject_detail_screen.dart';
 import 'package:formula_user/utilities.dart';
+import 'package:provider/provider.dart';
 import '../models/tab_model.dart';
+import '../res/ads.dart';
 import '../res/colours.dart';
+import '../res/common.dart';
 import '../res/styles.dart';
+import '../subscription_manager.dart';
 
 
 class Subjects extends StatefulWidget {
@@ -32,6 +36,7 @@ class _SubjectsState extends State<Subjects> {
   List<TabModel> list = [];
   @override
   Widget build(BuildContext context) {
+    bool isPrimeUser = Provider.of<SubscriptionManager>(context).isPrimeMember(context);
     return Scaffold(
       appBar: AppBar(
         elevation: 10,
@@ -46,45 +51,92 @@ class _SubjectsState extends State<Subjects> {
       body: _isLoading?const Center(child: CircularProgressIndicator(),) :Padding(
         padding: const EdgeInsets.only(top: 6.0),
         child: ListView.builder(
-          itemCount: list.length,
+          itemCount: (isPrimeUser ? list.length : list.length + (list.length ~/ (Common.adDisplayInterval + 1))),
           itemBuilder: (context, index) {
-            return InkWell(
-              onTap: (){
-                pushToNewRoute(context, SubjectDetail(list[index], (){}));
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(left: 12,right: 12,top: 8,bottom: 8),
-                child: Container(
-                  height: 50,
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                    color: Colours.listBackground,
-                    borderRadius: BorderRadius.circular(6),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.4),
-                        spreadRadius: 2,
-                        blurRadius: 3,
-                        offset: const Offset(0, 2), // changes position of shadow
-                      ),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 8.0, right: 8),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 4.0),
-                          child: Text(list[index].name, style: Styles.textWith14withBold(Colours.black)),
+            if(isPrimeUser){
+              return InkWell(
+                onTap: (){
+                  pushToNewRoute(context, SubjectDetail(list[index], (){}));
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 12,right: 12,top: 8,bottom: 8),
+                  child: Container(
+                    height: 50,
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                      color: Colours.listBackground,
+                      borderRadius: BorderRadius.circular(6),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.4),
+                          spreadRadius: 2,
+                          blurRadius: 3,
+                          offset: const Offset(0, 2), // changes position of shadow
                         ),
-                        Icon(Icons.arrow_circle_right_outlined, color: Colours.buttonColor2, size: 20,)
                       ],
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8.0, right: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left: 4.0),
+                            child: Text(list[index].name, style: Styles.textWith14withBold(Colours.black)),
+                          ),
+                          Icon(Icons.arrow_circle_right_outlined, color: Colours.buttonColor2, size: 20,)
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            );
+              );
+            }else{
+              if (!isPrimeUser && (index + 1) % (Common.adDisplayInterval + 1) == 0) {
+                // Ads are available, show the ad widget after every specified interval
+                return const BannerAdWidget();
+              } else {
+                // Adjusted index to account for the inserted widgets
+                final adjustedIndex = !isPrimeUser ? index - (index ~/ (Common.adDisplayInterval + 1)) : index;
+                return InkWell(
+                  onTap: (){
+                    pushToNewRoute(context, SubjectDetail(list[adjustedIndex], (){}));
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 12,right: 12,top: 8,bottom: 8),
+                    child: Container(
+                      height: 50,
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                        color: Colours.listBackground,
+                        borderRadius: BorderRadius.circular(6),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.4),
+                            spreadRadius: 2,
+                            blurRadius: 3,
+                            offset: const Offset(0, 2), // changes position of shadow
+                          ),
+                        ],
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8.0, right: 8),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 4.0),
+                              child: Text(list[adjustedIndex].name, style: Styles.textWith14withBold(Colours.black)),
+                            ),
+                            Icon(Icons.arrow_circle_right_outlined, color: Colours.buttonColor2, size: 20,)
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              }
+            }
           },
         ),
       )
