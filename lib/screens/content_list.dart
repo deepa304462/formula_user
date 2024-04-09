@@ -5,9 +5,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:formula_user/res/common.dart';
 import 'package:formula_user/res/db_helper.dart';
+import 'package:provider/provider.dart';
 import '../models/content_item_model.dart';
 import '../models/content_model.dart';
 import '../res/ads.dart';
+import '../subscription_manager.dart';
 import 'list_items/content_list_item.dart';
 
 class ContentList extends StatefulWidget {
@@ -37,25 +39,37 @@ class _ContentListState extends State<ContentList> {
 
   @override
   Widget build(BuildContext context) {
+    bool isPrimeUser = Provider.of<SubscriptionManager>(context).isPrimeMember(context);
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: list.length + (Common.isPrime ? (list.length ~/ 4) : 0),
+      itemCount: (isPrimeUser ? list.length  : list.length + (list.length ~/ 4)),
       itemBuilder: (BuildContext context, int index) {
-        if (Common.isPrime && index % 4 == 3) {
-          // Ads are available, show the ad widget at this index
-          return const BannerAdWidget();
-        } else {
-          // Adjusted index to account for the inserted widgets
-          final adjustedIndex = Common.isPrime ? index - (index ~/ 4) : index;
+        if(isPrimeUser){
           return Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image:AssetImage("assets/app_background.png"),
-                fit: BoxFit.fill
-              )
-            ),
-              child: ContentListItem(list[adjustedIndex],dbHelper,));
+              decoration: const BoxDecoration(
+                  image: DecorationImage(
+                      image:AssetImage("assets/app_background.png"),
+                      fit: BoxFit.fill
+                  )
+              ),
+              child: ContentListItem(list[index],dbHelper,));
+        }else{
+          if (!isPrimeUser && index % 4 == 3) {
+            // Ads are available, show the ad widget at this index
+            return const BannerAdWidget();
+          } else {
+            // Adjusted index to account for the inserted widgets
+            final adjustedIndex = !isPrimeUser ? index - (index ~/ 4) : index;
+            return Container(
+                decoration: const BoxDecoration(
+                    image: DecorationImage(
+                        image:AssetImage("assets/app_background.png"),
+                        fit: BoxFit.fill
+                    )
+                ),
+                child: ContentListItem(list[adjustedIndex],dbHelper,));
+          }
         }
       },
     );

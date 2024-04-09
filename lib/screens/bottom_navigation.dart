@@ -3,11 +3,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:formula_user/screens/about_screen.dart';
 import 'package:formula_user/screens/book_mark_scree.dart';
 import 'package:formula_user/screens/subjects.dart';
-import 'package:provider/provider.dart';
-
 import '../res/colours.dart';
 import '../res/styles.dart';
-import '../subscription_manager.dart';
 import 'home_page.dart';
 
 class MyBottomNavigation extends StatefulWidget {

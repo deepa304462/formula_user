@@ -58,7 +58,7 @@ class _BuyFinalPlanScreenState extends State<BuyFinalPlanScreen> {
                     Padding(
                       padding: const EdgeInsets.only(left: 8, top: 24),
                       child: Text(
-                        "/1 months",
+                        "/${widget.subscriptionsUIList.description}",
                         style: Styles.textWith12(Colours.white),
                       ),
                     ),

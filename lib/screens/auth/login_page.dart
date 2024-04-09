@@ -135,34 +135,6 @@ class _LoginPageState extends State<LoginPage> {
       _isLoading = false;
     });
     storeToSharedPreference(true,userCredentials.user?.uid ?? "");
-    if(context.mounted){
-      //pushToNewRouteAndClearAll(context,  MyBottomNavigation());
-      checkPrimeMember();
-
-    }
-  }
-
-  Future<void> checkPrimeMember() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    try {
-      CollectionReference users = FirebaseFirestore.instance.collection('users');
-      DocumentSnapshot doc = await users.doc(prefs.getString('userId')).get();
-      if(doc['isPrimeMember']){
-        prefs.setBool('isPrimeMember', true);
-        Common.isPrime = true;
-      }else{
-        prefs.setBool('isPrimeMember', false);
-
-      }
-      Common.isLogin = true;
-      pushToNewRouteAndClearAll(context, MyBottomNavigation());
-
-    } catch (e) {
-      print('Error checking user existence: $e');
-      pushToNewRouteAndClearAll(context, MyBottomNavigation());
-    }
-
   }
 
   Future<void> addUserToFirebase(UserModel user) async {

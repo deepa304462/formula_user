@@ -11,7 +11,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:formula_user/models/content_item_model.dart';
 import 'package:formula_user/res/db_helper.dart';
 import 'package:image/image.dart' as img;
-import 'package:marquee/marquee.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
@@ -61,10 +60,10 @@ class _ContentListItemState extends State<ContentListItem> {
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.only(left: 12.0, top: 4.0),
-                        child: Marquee(
-                          text: widget.contentItemModel.title,
+                        child: Text(
+                          widget.contentItemModel.title,
                           style: Styles.textWith14(Colours.buttonColor2),
-                          scrollAxis: Axis.horizontal,
+                          /*scrollAxis: Axis.horizontal,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           blankSpace: 20.0,
                           velocity: 100.0,
@@ -72,7 +71,7 @@ class _ContentListItemState extends State<ContentListItem> {
                           accelerationDuration: const Duration(seconds: 1),
                           accelerationCurve: Curves.easeInCirc,
                           decelerationDuration: const Duration(milliseconds: 500),
-                          decelerationCurve: Curves.easeOut,
+                          decelerationCurve: Curves.easeOut,*/
                         ),
                       ),
                     ),

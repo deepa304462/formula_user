@@ -223,7 +223,6 @@ class _HomePageState extends State<HomePage>
     FirebaseAuth.instance.signOut();
     if (context.mounted) {
       Common.isLogin = false;
-      Common.isPrime = false;
       prefs.setBool("isLoggedIn", false);
 
       pushToNewRouteAndClearAll(context, const LoginPage());
