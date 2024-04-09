@@ -27,6 +27,7 @@ Future main() async {
   runApp(ChangeNotifierProvider(
     create: (context) => SubscriptionManager(),
     child: const MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: SplashScreen(),
     ),
   ));
