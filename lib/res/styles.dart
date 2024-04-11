@@ -59,4 +59,8 @@ class Styles {
   static TextStyle textWithUnderLine(Color color) {
     return GoogleFonts.cardo(color: color, fontSize: 16, fontWeight: FontWeight.w500,decoration: TextDecoration.underline);
   }
+
+  static TextStyle textWith24withBold(Color color) {
+    return GoogleFonts.cardo(color: color, fontSize: 24, fontWeight: FontWeight.bold);
+  }
 }

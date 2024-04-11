@@ -12,6 +12,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 import '../models/tab_model.dart';
 import '../res/colours.dart';
 import '../utilities.dart';
@@ -129,7 +130,7 @@ class _HomePageState extends State<HomePage>
                               top: 8.0, left: 6.0, right: 6.0),
                           child: InkWell(
                             onTap: () {
-                              pushToNewRoute(context, const SearchBarScreen());
+                              pushToNewRoute(context,  SearchBarScreen());
                             },
                             child: Container(
                               height: 38,
@@ -167,11 +168,18 @@ class _HomePageState extends State<HomePage>
                             child: TabBar(
                                 controller: _tabController,
                                 isScrollable: true,
-                                labelColor: Colors.pinkAccent,
+                               // labelColor: Colors.pinkAccent,
                                 labelStyle: Styles.textWith14withBold(
                                     Colours.buttonColor2),
                                 indicatorColor: Colors.pinkAccent,
-                                indicatorSize: TabBarIndicatorSize.label,
+                                indicatorSize: TabBarIndicatorSize.tab,
+                                indicator: MaterialIndicator(
+                                  color: Colors.pinkAccent,
+                                  height: 3,
+                                  bottomLeftRadius: 5,
+                                  bottomRightRadius: 5,
+                                ),
+                                labelPadding: EdgeInsets.only(right: 10),
                                 tabs: List.generate(
                                     list.length,
                                     (index) => Row(

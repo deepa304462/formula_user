@@ -21,7 +21,7 @@ class _MyBottomNavigationState extends State<MyBottomNavigation> {
     const HomePage(),
     Subjects(),
     const BookMarksScreen(),
-    const AboutScreen()
+     AboutScreen()
   ];
 
   void _onItemTapped(int index) {

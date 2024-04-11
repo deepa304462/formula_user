@@ -12,6 +12,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:formula_user/res/db_helper.dart';
+import 'package:lottie/lottie.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
@@ -77,7 +78,12 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
                     } else if (snapshot.hasError) {
                       return  Center(child: Text('Error loading data',style: Styles.textWith16bold(Colours.red900),));
                     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return  Center(child: Text('No data available',style: Styles.textWith16bold(Colours.greyLight700),));
+                      return  Center(child: Column(
+                        children: [
+                          Lottie.asset("assets/empty.json",height: 400,width: 400),
+                          Text('No book marks added book marks will \n                    appear here',style: Styles.textWith16bold(Colours.greyLight700),),
+                        ],
+                      ));
                     } else {
                       return ListView.builder(
                         shrinkWrap: true,

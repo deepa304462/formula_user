@@ -6,12 +6,13 @@ import 'package:provider/provider.dart';
 import '../res/ads.dart';
 import '../res/colours.dart';
 import '../res/common.dart';
+import '../res/db_helper.dart';
 import '../res/styles.dart';
 import '../subscription_manager.dart';
 import '../utilities.dart';
 
 class SearchBarScreen extends StatefulWidget {
-  const SearchBarScreen({super.key});
+   SearchBarScreen({super.key});
 
   @override
   State<SearchBarScreen> createState() => _SearchBarScreenState();
@@ -20,6 +21,8 @@ class SearchBarScreen extends StatefulWidget {
 class _SearchBarScreenState extends State<SearchBarScreen> {
   final TextEditingController _searchController = TextEditingController();
   List<DocumentSnapshot> searchResults = [];
+
+
   @override
   Widget build(BuildContext context) {
     bool isPrimeUser = Provider.of<SubscriptionManager>(context).isPrimeMember(context);
@@ -74,40 +77,37 @@ class _SearchBarScreenState extends State<SearchBarScreen> {
                         children: [
                           Container(
                             decoration:  BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [Colours.buttonColor2,Colours.buttonColor2,Colours.buttonColor1],
-                                ),
+                                color: Colours.itemCardBackground,
                                 borderRadius: const BorderRadius.only(topLeft: Radius.circular(16),topRight: Radius.circular(16))
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Flexible(
+                                Expanded(
                                   child: Padding(
                                     padding: const EdgeInsets.only(left: 8),
                                     child: Center(
                                       child: Row(
                                         children: [
                                           Expanded(
+                                            flex: 4,
                                             child: Text(
                                               item['title'],
                                               style:Styles.textWith18withBold(Colours.white),
-                                              maxLines: 15,
+
 
                                             ),
                                           ),
-                                          const Spacer(flex: 2),
-                                          Icon(Icons.favorite,color: Colours.white),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Icon(Icons.share,color: Colours.white),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
+                                          // const Spacer(flex: 2),
+                                          // Icon(Icons.favorite,color: Colours.white),
+                                          // const SizedBox(
+                                          //   width: 10,
+                                          // ),
+                                          // Icon(Icons.share,color: Colours.white),
+                                          // const SizedBox(
+                                          //   width: 10,
+                                          // ),
                                         ],
                                       ),
                                     ),

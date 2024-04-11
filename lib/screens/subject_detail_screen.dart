@@ -80,14 +80,14 @@ class _SubjectDetailState extends State<SubjectDetail> {
                       },
                       title: Row(
                         children: [
-                          Flexible(child: Text(item.title,)),
+                          Flexible(child: Text(item.title)),
                         ],
                       ),
                       titleTextStyle: Styles.textWith16(Colours.black),
                     );
                   },
                   body: Padding(
-                    padding: const EdgeInsets.only(left: 12,right: 12),
+                    padding: const EdgeInsets.only(left: 12,right: 12,),
                     child: ContentList(item),
                   ),
                   isExpanded: item.isExpanded,
