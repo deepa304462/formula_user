@@ -40,8 +40,7 @@ class _LoginPageState extends State<LoginPage> {
               _signInWithGoogle();
             },
                 style: ElevatedButton.styleFrom(
-                  primary: Colours.buttonColor1,
-                  onPrimary: Colors.black,
+                  foregroundColor: Colors.black, backgroundColor: Colours.buttonColor1,
                   minimumSize: const Size(300,40),
                 ),
                 icon: const FaIcon(FontAwesomeIcons.google,color: Colors.white,),
@@ -53,8 +52,7 @@ class _LoginPageState extends State<LoginPage> {
               //SignInWithGoogle();
             },
                 style: ElevatedButton.styleFrom(
-                  primary: Colours.buttonColor2,
-                  onPrimary: Colors.black,
+                  foregroundColor: Colors.black, backgroundColor: Colours.buttonColor2,
                   minimumSize: const Size(300,40),
                 ),
                 icon: const FaIcon(FontAwesomeIcons.apple,color: Colors.white,),

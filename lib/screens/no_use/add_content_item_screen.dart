@@ -125,8 +125,7 @@ class _AddContentItemScreenState extends State<AddContentItemScreen> {
                     getImage(ImageSource.gallery);
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.blueGrey.shade500,
-                    onPrimary: Colors.black,
+                    foregroundColor: Colors.black, backgroundColor: Colors.blueGrey.shade500,
                     minimumSize: const Size(double.infinity, 50),
                   ),
                   child: galleryFile == null
@@ -158,8 +157,7 @@ class _AddContentItemScreenState extends State<AddContentItemScreen> {
                     pickFile();
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.blueGrey.shade500,
-                    onPrimary: Colors.black,
+                    foregroundColor: Colors.black, backgroundColor: Colors.blueGrey.shade500,
                     minimumSize: const Size(double.infinity, 50),
                   ),
                   child: pfgFile == null
@@ -191,8 +189,7 @@ class _AddContentItemScreenState extends State<AddContentItemScreen> {
                     uploadImage(galleryFile!);
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.green.shade400,
-                    onPrimary: Colors.black,
+                    foregroundColor: Colors.black, backgroundColor: Colors.green.shade400,
                     minimumSize: const Size(double.infinity, 50),
                   ),
                   child:_isUploading ? CircularProgressIndicator(color: Colours.appbar,) : const Text(

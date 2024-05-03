@@ -113,8 +113,7 @@ class _AddContentScreenState extends State<AddContentScreen> {
                 addFormulaContent();
               },
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.green.shade400,
-                    onPrimary: Colors.black,
+                    foregroundColor: Colors.black, backgroundColor: Colors.green.shade400,
                     minimumSize: const Size(double.infinity, 50),
                   ),
                   child: const Text('Add Content', style: TextStyle(

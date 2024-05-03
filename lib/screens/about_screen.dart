@@ -125,48 +125,6 @@ class AboutScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 16),
-              Text(
-                'Developer Information:',
-                style: Styles.textWith18withBold(Colours.black)
-              ),
-              RichText(
-                text: TextSpan(
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.black,
-                  ),
-                  children: [
-                    TextSpan(
-                        text: 'Developer Name(s) ',
-                        style: Styles.textWith16bold(Colors.black)
-                    ),
-
-                    TextSpan(
-                        text: 'Vaibhav Pandey',
-                        style: Styles.textWith14(Colours.black)
-                    ),
-                  ],
-                ),
-              ),
-              RichText(
-                text: TextSpan(
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.black,
-                  ),
-                  children: [
-                    TextSpan(
-                        text: 'Developer Name(s) ',
-                        style: Styles.textWith16bold(Colors.black)
-                    ),
-
-                    TextSpan(
-                        text: 'Deepa Pandey',
-                        style: Styles.textWith14(Colours.black)
-                    ),
-                  ],
-                ),
-              ),
               RichText(
                 text: TextSpan(
                   style: TextStyle(

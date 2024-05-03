@@ -106,8 +106,7 @@ class _AddTabScreenState extends State<AddTabScreen> {
                       addTab();
                     },
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.green.shade400,
-                      onPrimary: Colors.black,
+                      foregroundColor: Colors.black, backgroundColor: Colors.green.shade400,
                       minimumSize: const Size(double.infinity, 50),
                     ),
                     child: const Text(
