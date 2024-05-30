@@ -125,7 +125,7 @@ class AboutScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 16),
-              RichText(
+             /* RichText(
                 text: TextSpan(
                   style: TextStyle(
                     fontSize: 16,
@@ -143,11 +143,11 @@ class AboutScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-              ),
+              ),*/
 
               SizedBox(height: 16),
               Text(
-                'Version: 1.0.0',
+                'Version: 1.0.2',
                 style: TextStyle(
                   fontStyle: FontStyle.italic,
                 ),

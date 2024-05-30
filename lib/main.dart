@@ -11,18 +11,13 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
 
+import 'firebase_options.dart';
+
 final serviceLocator = GetIt.instance;
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: const FirebaseOptions(
-      apiKey: "AIzaSyDhcEMZ_oGAay0Z6u1iVZgg6eaRDzc1zAM",
-      appId: "735367481552",
-      messagingSenderId: "735367481552",
-      projectId: "com.mathformula.app",
-    ),
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   MobileAds.instance.initialize();
   runApp(ChangeNotifierProvider(
     create: (context) => SubscriptionManager(),
@@ -47,7 +42,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.asset("assets/splash_video.mp4");
+    _controller = VideoPlayerController.asset("assets/splash_video.mp4",);
     _controller.initialize().then((_) {
       _controller.setLooping(true);
       Timer(const Duration(seconds: 0), () {
@@ -72,16 +67,21 @@ class _SplashScreenState extends State<SplashScreen> {
       Provider.of<SubscriptionManager>(context, listen: true).initializeInAppPurchasesForPrimeCheck();
     }
     return Scaffold(
-      backgroundColor: Colours.transparent,
+      backgroundColor: Colours.white,
       body: _visible
-          ? SizedBox(
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              child: AspectRatio(
-                aspectRatio: _controller.value.aspectRatio,
-                child: VideoPlayer(_controller),
-              ),
-            )
+          ? Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                  height: MediaQuery.of(context).size.height/2,
+                  width: MediaQuery.of(context).size.width,
+                  child: AspectRatio(
+                    aspectRatio: _controller.value.aspectRatio,
+                    child: VideoPlayer(_controller),
+                  ),
+                ),
+            ],
+          )
           : Container(),
     );
   }

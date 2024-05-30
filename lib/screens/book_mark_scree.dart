@@ -3,6 +3,7 @@ import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image/image.dart' as img;
 
@@ -34,6 +35,7 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
   bool _isLoading = false;
   bool isInBookmark = true;
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  bool isShareLoading = false;
 
   @override
   void initState() {
@@ -58,7 +60,8 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
       appBar: AppBar(
         elevation: 10,
         toolbarHeight: 40,
-        title: Text("Book Marks", style: Styles.textWith18withBold(Colours.white)),
+        title:
+            Text("Book Marks", style: Styles.textWith18withBold(Colours.white)),
         backgroundColor: Colours.buttonColor2,
       ),
       body: RepaintBoundary(
@@ -71,128 +74,182 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
                 _isLoading
                     ? const Center(child: CircularProgressIndicator())
                     : FutureBuilder(
-                  future: bookMarkList,
-                  builder: (context, AsyncSnapshot<List<FavoriteModel>> snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return  Center(child: Text('Error loading data',style: Styles.textWith16bold(Colours.red900),));
-                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return  Center(child: Column(
-                        children: [
-                          Lottie.asset("assets/empty.json",height: 400,width: 400),
-                          Text('No book marks added book marks will \n                    appear here',style: Styles.textWith16bold(Colours.greyLight700),),
-                        ],
-                      ));
-                    } else {
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: snapshot.data!.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return Padding(
-                            padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                        future: bookMarkList,
+                        builder: (context,
+                            AsyncSnapshot<List<FavoriteModel>> snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          } else if (snapshot.hasError) {
+                            return Center(
+                                child: Text(
+                              'Error loading data',
+                              style: Styles.textWith16bold(Colours.red900),
+                            ));
+                          } else if (!snapshot.hasData ||
+                              snapshot.data!.isEmpty) {
+                            return Center(
+                                child: Column(
                               children: [
-                                Container(
-                                  decoration:  BoxDecoration(
-                                    borderRadius: const BorderRadius.only(
-                                      topLeft: Radius.circular(16),
-                                      topRight: Radius.circular(16),
-                                    ),
-                                    color: Colours.titleBackground
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                Lottie.asset("assets/empty.json",
+                                    height: 400, width: 400),
+                                Text(
+                                  'No book marks added book marks will \n                    appear here',
+                                  style: Styles.textWith16bold(
+                                      Colours.greyLight700),
+                                ),
+                              ],
+                            ));
+                          } else {
+                            return ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: snapshot.data!.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 8.0, bottom: 8.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Flexible(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(left: 8,right: 8,top: 4,bottom: 4),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            children: [
-                                              Expanded(
-                                                child: Text(
-                                                    textAlign: TextAlign.center,
-                                                    maxLines: 5,
-                                                    snapshot.data![index].title,
-                                                    style:
-                                                    Styles.textWith18withBold(Colours.white)),
-                                              ),
-                                              InkWell(
-                                                onTap: () async {
-                                                  isInBookmark = false;
-                                                  await dbHelper!.deleteFromFavorite(snapshot.data![index].id.toString());
+                                      Container(
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                const BorderRadius.only(
+                                              topLeft: Radius.circular(16),
+                                              topRight: Radius.circular(16),
+                                            ),
+                                            color: Colours.titleBackground),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Flexible(
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 8,
+                                                    right: 8,
+                                                    top: 4,
+                                                    bottom: 4),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    Expanded(
+                                                      child: Text(
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          maxLines: 5,
+                                                          snapshot.data![index]
+                                                              .title,
+                                                          style: Styles
+                                                              .textWith18withBold(
+                                                                  Colours
+                                                                      .white)),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () async {
+                                                        isInBookmark = false;
+                                                        await dbHelper!
+                                                            .deleteFromFavorite(
+                                                                snapshot
+                                                                    .data![
+                                                                        index]
+                                                                    .id
+                                                                    .toString());
 
-                                                  // Reload data
-                                                  loadData();
+                                                        // Reload data
+                                                        loadData();
 
-                                                  // Trigger rebuild of widget tree
-                                                  setState(() {});
-                                                },
-                                                child: SvgPicture.asset(
-                                                  isInBookmark ? "assets/bookmark.svg" : "assets/bookmark_border.svg",
-                                                  width: 30,
-                                                  height: 30,
-                                                  color: Colours.white,
+                                                        // Trigger rebuild of widget tree
+                                                        setState(() {});
+                                                      },
+                                                      child: SvgPicture.asset(
+                                                        isInBookmark
+                                                            ? "assets/bookmark.svg"
+                                                            : "assets/bookmark_border.svg",
+                                                        width: 30,
+                                                        height: 30,
+                                                        color: Colours.white,
+                                                      ),
+                                                    ),
+                                                    isShareLoading
+                                                        ? const SizedBox(
+                                                            height: 10,
+                                                            width: 10,
+                                                            child:
+                                                                CircularProgressIndicator())
+                                                        : InkWell(
+                                                            onTap: () {
+                                                              SchedulerBinding
+                                                                  .instance
+                                                                  .addPostFrameCallback(
+                                                                      (_) {
+                                                                requestStoragePermission(
+                                                                    snapshot.data?[
+                                                                        index]);
+                                                              });
+                                                            },
+                                                            child: SvgPicture.asset(
+                                                                "assets/share_icon.svg",
+                                                                width: 30,
+                                                                height: 30,
+                                                                color: Colours
+                                                                    .white),
+                                                          ),
+                                                  ],
                                                 ),
                                               ),
-
-                                           InkWell(
-                                             onTap: (){
-                                               SchedulerBinding.instance.addPostFrameCallback((_) {
-                                                 requestStoragePermission(snapshot.data?[index]);
-                                               });
-                                             },
-                                             child: SvgPicture.asset(
-                                                      "assets/share_icon.svg",
-                                                      width: 30,
-                                                      height: 30,
-
-                                                    color: Colours.white),
-                                           ),
-                                            ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: Colors.indigo, width: 1),
+                                          borderRadius: const BorderRadius.only(
+                                            bottomLeft: Radius.circular(16),
+                                            bottomRight: Radius.circular(16),
+                                          ),
+                                        ),
+                                        child: ClipRRect(
+                                          borderRadius: const BorderRadius.only(
+                                            bottomRight: Radius.circular(16),
+                                            bottomLeft: Radius.circular(16),
+                                          ),
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              // pushToNewRoute(
+                                              //   context,
+                                              // //  DetailedFormulaScreen(snapshot.data![index].image.toString(),snapshot.data![index].pdf),
+                                              // );
+                                            },
+                                            child: CachedNetworkImage(
+                                              imageUrl: snapshot.data![index].image.toString(),
+                                              placeholder: (context, url) =>
+                                                  Center(child: Image.asset('assets/loading_icon.gif',height: 150,width: 150,)),
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      Icon(Icons.error),
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ],
                                   ),
-                                ),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.indigo, width: 1),
-                                    borderRadius: const BorderRadius.only(
-                                      bottomLeft: Radius.circular(16),
-                                      bottomRight: Radius.circular(16),
-                                    ),
-                                  ),
-                                  child: ClipRRect(
-                                    borderRadius: const BorderRadius.only(
-                                      bottomRight: Radius.circular(16),
-                                      bottomLeft: Radius.circular(16),
-                                    ),
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        // pushToNewRoute(
-                                        //   context,
-                                        // //  DetailedFormulaScreen(snapshot.data![index].image.toString(),snapshot.data![index].pdf),
-                                        // );
-                                      },
-                                      child: Image.network(snapshot.data![index].image.toString()),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
+                                );
+                              },
+                            );
+                          }
                         },
-                      );
-                    }
-                  },
-                ),
+                      ),
               ],
             ),
           ),
@@ -202,10 +259,9 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
   }
 
   void requestStoragePermission(FavoriteModel? data) async {
-
     var status = await Permission.mediaLibrary.request();
     var status2 = await Permission.storage.request();
-    if (status.isGranted || status2.isGranted ) {
+    if (status.isGranted || status2.isGranted) {
       checkDebugPaint(data);
       print("Storage permission granted");
     } else if (status.isDenied || status2.isGranted) {
@@ -219,7 +275,7 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
         fontSize: 16.0,
       );
       print("Storage permission denied");
-    } else if (status.isPermanentlyDenied || status2.isGranted ) {
+    } else if (status.isPermanentlyDenied || status2.isGranted) {
       Fluttertoast.showToast(
         msg: "Storage permission permanently denied",
         toastLength: Toast.LENGTH_SHORT,
@@ -235,6 +291,9 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
   }
 
   checkDebugPaint(FavoriteModel? data) async {
+    setState(() {
+      isShareLoading = true;
+    });
     var debugNeedsPaint = false;
 
     RenderRepaintBoundary boundary = RenderRepaintBoundary();
@@ -243,15 +302,18 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
     if (debugNeedsPaint) {
       print("Waiting for boundary to be painted.");
       await Future.delayed(const Duration(milliseconds: 20));
-      return captureModifyAndShare(scaffoldKey,data);
+      captureModifyAndShare(scaffoldKey, data);
     }
   }
 
-  void captureModifyAndShare(GlobalKey<State<StatefulWidget>> key, FavoriteModel? data) async {
+  void captureModifyAndShare(
+      GlobalKey<State<StatefulWidget>> key, FavoriteModel? data) async {
     try {
-      RenderRepaintBoundary boundary = key.currentContext!.findRenderObject() as RenderRepaintBoundary;
+      RenderRepaintBoundary boundary =
+          key.currentContext!.findRenderObject() as RenderRepaintBoundary;
       ui.Image capturedImage = await boundary.toImage(pixelRatio: 1);
-      ByteData? byteData = await capturedImage.toByteData(format: ui.ImageByteFormat.png);
+      ByteData? byteData =
+          await capturedImage.toByteData(format: ui.ImageByteFormat.png);
       GlobalKey<ScaffoldState> scaffoldKey = key as GlobalKey<ScaffoldState>;
       Uint8List originalImage = await captureScreenshot(scaffoldKey);
 
@@ -265,7 +327,13 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
 
       String imagePath = await saveImageLocally(modifiedImage);
       await Share.shareFiles([imagePath], text: 'formula of ${data?.title}');
+      setState(() {
+        isShareLoading = false;
+      });
     } catch (e) {
+      setState(() {
+        isShareLoading = false;
+      });
       print('Error capturing or sharing screenshot: $e');
     }
   }
@@ -277,9 +345,13 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
     return imagePath;
   }
 
-  Future<Uint8List> captureScreenshot(GlobalKey<State<StatefulWidget>> key) async {
-    RenderRepaintBoundary boundary = key.currentContext!.findRenderObject() as RenderRepaintBoundary;
-    ui.Image image = await boundary.toImage(pixelRatio: 1.0,);
+  Future<Uint8List> captureScreenshot(
+      GlobalKey<State<StatefulWidget>> key) async {
+    RenderRepaintBoundary boundary =
+        key.currentContext!.findRenderObject() as RenderRepaintBoundary;
+    ui.Image image = await boundary.toImage(
+      pixelRatio: 1.0,
+    );
     ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
     Uint8List uint8List = byteData!.buffer.asUint8List();
     return uint8List;
@@ -287,10 +359,12 @@ class _BookMarksScreenState extends State<BookMarksScreen> {
 
   Uint8List addWatermark(Uint8List imageBytes, String watermarkText) {
     img.Image image = img.decodeImage(imageBytes)!;
-    print('Image dimensions before adding watermark: ${image.width} x ${image.height}');
-    img.drawString(image, watermarkText, font: img.arial24, color: img.ColorRgb8(129, 133, 137));
-    print('Image dimensions after adding watermark: ${image.width} x ${image.height}');
+    print(
+        'Image dimensions before adding watermark: ${image.width} x ${image.height}');
+    img.drawString(image, watermarkText,
+        font: img.arial24, color: img.ColorRgb8(129, 133, 137));
+    print(
+        'Image dimensions after adding watermark: ${image.width} x ${image.height}');
     return Uint8List.fromList(img.encodePng(image));
   }
-
 }

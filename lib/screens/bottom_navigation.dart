@@ -21,7 +21,7 @@ class _MyBottomNavigationState extends State<MyBottomNavigation> {
     const HomePage(),
     Subjects(),
     const BookMarksScreen(),
-     AboutScreen()
+    AboutScreen()
   ];
 
   void _onItemTapped(int index) {
@@ -44,30 +44,30 @@ class _MyBottomNavigationState extends State<MyBottomNavigation> {
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
-              "assets/homepage.svg",
-              color: Colours.gret500,
+              "assets/tab_view_icon.svg",
+              color: Colours.white,
             ),
-            label: 'Homepage',
+            label: 'Tab View',
           ),
           BottomNavigationBarItem(
             icon: Icon(
               Icons.subject,
-              color: Colours.gret500,
+              color: Colours.white,
               size: 20,
             ),
-            label: 'Subjects',
+            label: 'List View',
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
               "assets/bookmark.svg",
-              color: Colours.gret500,
+              color: Colours.white,
             ),
             label: 'Book Marks',
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
               "assets/about.svg",
-              color: Colours.gret500,
+              color: Colours.white,
               width: 20,
               height: 20,
             ),

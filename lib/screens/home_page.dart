@@ -168,10 +168,10 @@ class _HomePageState extends State<HomePage>
                             child: TabBar(
                                 controller: _tabController,
                                 isScrollable: true,
-                               // labelColor: Colors.pinkAccent,
                                 labelStyle: Styles.textWith14withBold(
                                     Colours.buttonColor2),
                                 indicatorColor: Colors.pinkAccent,
+                                indicatorPadding: const EdgeInsets.only(left: 20.0),
                                 indicatorSize: TabBarIndicatorSize.tab,
                                 indicator: MaterialIndicator(
                                   color: Colors.pinkAccent,
@@ -179,7 +179,7 @@ class _HomePageState extends State<HomePage>
                                   bottomLeftRadius: 5,
                                   bottomRightRadius: 5,
                                 ),
-                                labelPadding: EdgeInsets.only(right: 10),
+                                labelPadding: const EdgeInsets.only(right: 10.0,left: 10.0),
                                 tabs: List.generate(
                                     list.length,
                                     (index) => Row(

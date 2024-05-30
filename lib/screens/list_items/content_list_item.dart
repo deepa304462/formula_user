@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -16,11 +17,9 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../models/favorite_model.dart';
 import '../../res/colours.dart';
-import '../../res/common.dart';
 import '../../res/styles.dart';
 import '../../subscription_manager.dart';
 
@@ -36,6 +35,7 @@ class ContentListItem extends StatefulWidget {
 class _ContentListItemState extends State<ContentListItem> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   bool isInBookmark = false;
+  bool isShareLoading = false;
   RewardedAd? _rewardedAd;
   final adUnitId = Platform.isAndroid
       ? 'ca-app-pub-3940256099942544/5224354917'
@@ -72,19 +72,10 @@ class _ContentListItemState extends State<ContentListItem> {
                   children: [
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 12.0, top: 4.0),
+                        padding: const EdgeInsets.only(left: 12.0, top: 6.0,bottom: 6.0),
                         child: Text(
                           widget.contentItemModel.title,
-                          style: Styles.textWith16bold(Colours.white),
-                          /*scrollAxis: Axis.horizontal,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          blankSpace: 20.0,
-                          velocity: 100.0,
-                          startPadding: 10.0,
-                          accelerationDuration: const Duration(seconds: 1),
-                          accelerationCurve: Curves.easeInCirc,
-                          decelerationDuration: const Duration(milliseconds: 500),
-                          decelerationCurve: Curves.easeOut,*/
+                          style: Styles.textWith16(Colours.appbar),
                         ),
                       ),
                     ),
@@ -96,6 +87,7 @@ class _ContentListItemState extends State<ContentListItem> {
                           if (_rewardedAd != null) {
                             _showRewardedAd();
                           } else {
+                            _addToBookmarks();
                             print('Rewarded ad not available yet. Please try again later.');
                             // Alternatively, you can call _addToBookmarks() directly here if rewarded ad is not available
                           }
@@ -105,12 +97,15 @@ class _ContentListItemState extends State<ContentListItem> {
                         isInBookmark
                             ? "assets/bookmark.svg"
                             : "assets/bookmark_border.svg",
-                        width: 22,
-                        height: 22,
+                        width: 28,
+                        height: 28,
                         color: Colours.white,
                       ),
                     ),
-                    InkWell(
+                    isShareLoading ? const SizedBox(
+                      height: 10,
+                        width: 10,
+                        child: CircularProgressIndicator()) : InkWell(
                       onTap: () {
                         SchedulerBinding.instance.addPostFrameCallback((_) {
                           requestStoragePermission();
@@ -118,90 +113,14 @@ class _ContentListItemState extends State<ContentListItem> {
                       },
                       child: Padding(
                           padding:
-                          const EdgeInsets.only(left: 2, right: 8.0),
+                          const EdgeInsets.only(left: 6.0, right: 8.0),
                           child: SvgPicture.asset("assets/share_icon.svg",
-                              width: 22, height: 22, color: Colours.white)),
+                              width: 28, height: 28, color: Colours.white)),
                     ),
                   ],
                 ),
               ),
             ),
-            /*Container(
-              height: 40,
-              decoration: BoxDecoration(
-                  color: Colours.itemCardBackground,
-                  borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(16),
-                      topRight: Radius.circular(16))),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Flexible(
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 12.0),
-                            child: Text(
-                                textAlign: TextAlign.start,
-                                maxLines: 5,
-                                widget.contentItemModel.title,
-                                style: Styles.textWith14(Colours.buttonColor2)),
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            if (isInBookmark) {
-                              widget.dbHelper!.deleteFromFavorite(
-                                  widget.contentItemModel.id);
-                              setState(() {
-                                isInBookmark = false;
-                              });
-                            } else {
-                              widget.dbHelper!
-                                  .insert(FavoriteModel(
-                                id: widget.contentItemModel.id,
-                                title: widget.contentItemModel.title,
-                                image: widget.contentItemModel.imageUrl,
-                                pdf: widget.contentItemModel.pdfUrl,
-                              ))
-                                  .then((value) {
-                                setState(() {
-                                  isInBookmark = true;
-                                });
-                              }).onError((error, stackTrace) {
-                                print(error.toString());
-                              });
-                            }
-                          },
-                          child: SvgPicture.asset(
-                            isInBookmark
-                                ? "assets/bookmark.svg"
-                                : "assets/bookmark_border.svg",
-                            width: 20,
-                            height: 20,
-                            color: Colours.white,
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            SchedulerBinding.instance.addPostFrameCallback((_) {
-                              requestStoragePermission();
-                            });
-                          },
-                          child: Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 2, right: 8.0),
-                              child: SvgPicture.asset("assets/share_icon.svg",
-                                  width: 20, height: 20, color: Colours.white)),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),*/
             Container(
                 decoration: BoxDecoration(
                     border:
@@ -216,13 +135,16 @@ class _ContentListItemState extends State<ContentListItem> {
                         bottomRight: Radius.circular(16),
                         bottomLeft: Radius.circular(16)),
                     child: GestureDetector(
-                        // onTap: (){
-                        //   pushToNewRoute(context,  DetailedFormulaScreen(widget.contentItemModel.imageUrl,widget.contentItemModel.pdfUrl));
-                        // },
                         child: Container(
                             decoration: BoxDecoration(color: Colours.white),
-                            child: Image.network(
-                                widget.contentItemModel.imageUrl)))))
+                            child: CachedNetworkImage(
+                              imageUrl: widget.contentItemModel.imageUrl,
+                              placeholder: (context, url) =>
+                                  Center(child: Image.asset('assets/loading_icon.gif',height: 150,width: 150,)),
+                              errorWidget:
+                                  (context, url, error) =>
+                                  Icon(Icons.error),
+                            ) ))))
           ],
         ),
       ),
@@ -253,6 +175,9 @@ class _ContentListItemState extends State<ContentListItem> {
   }
 
   checkDebugPaint() async {
+    setState(() {
+      isShareLoading = true;
+    });
     var debugNeedsPaint = false;
 
     RenderRepaintBoundary boundary = RenderRepaintBoundary();
@@ -261,17 +186,12 @@ class _ContentListItemState extends State<ContentListItem> {
     if (debugNeedsPaint) {
       print("Waiting for boundary to be painted.");
       await Future.delayed(const Duration(milliseconds: 20));
-      return captureModifyAndShare(scaffoldKey);
+      captureModifyAndShare(scaffoldKey);
     }
   }
 
   void captureModifyAndShare(GlobalKey<State<StatefulWidget>> key) async {
     try {
-      RenderRepaintBoundary boundary =
-          key.currentContext!.findRenderObject() as RenderRepaintBoundary;
-      ui.Image capturedImage = await boundary.toImage(pixelRatio: 1);
-      ByteData? byteData =
-          await capturedImage.toByteData(format: ui.ImageByteFormat.png);
       GlobalKey<ScaffoldState> scaffoldKey = key as GlobalKey<ScaffoldState>;
       Uint8List originalImage = await captureScreenshot(scaffoldKey);
 
@@ -286,7 +206,13 @@ class _ContentListItemState extends State<ContentListItem> {
       String imagePath = await saveImageLocally(modifiedImage);
       await Share.shareFiles([imagePath],
           text: 'formula of ${widget.contentItemModel.title}');
+      setState(() {
+        isShareLoading = false;
+      });
     } catch (e) {
+      setState(() {
+        isShareLoading = false;
+      });
       print('Error capturing or sharing screenshot: $e');
     }
   }
@@ -304,6 +230,7 @@ class _ContentListItemState extends State<ContentListItem> {
   }
 
   void requestStoragePermission() async {
+
     var status = await Permission.mediaLibrary.request();
     var status2 = await Permission.storage.request();
     if (status.isGranted || status2.isGranted) {
@@ -339,7 +266,7 @@ class _ContentListItemState extends State<ContentListItem> {
   void _loadRewardedAd() {
     RewardedAd.load(
       adUnitId: adUnitId,
-      request: AdRequest(),
+      request: const AdRequest(),
       rewardedAdLoadCallback: RewardedAdLoadCallback(
         onAdLoaded: (RewardedAd ad) {
           setState(() {

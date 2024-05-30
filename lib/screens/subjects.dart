@@ -36,7 +36,6 @@ class _SubjectsState extends State<Subjects> {
   List<TabModel> list = [];
   @override
   Widget build(BuildContext context) {
-    bool isPrimeUser = Provider.of<SubscriptionManager>(context).isPrimeMember(context);
     return Scaffold(
       appBar: AppBar(
         elevation: 10,
@@ -51,92 +50,48 @@ class _SubjectsState extends State<Subjects> {
       body: _isLoading?const Center(child: CircularProgressIndicator(),) :Padding(
         padding: const EdgeInsets.only(top: 6.0),
         child: ListView.builder(
-          itemCount: (isPrimeUser ? list.length : list.length + (list.length ~/ (Common.adDisplayInterval + 1))),
+          itemCount: list.length,
           itemBuilder: (context, index) {
-            if(isPrimeUser){
-              return InkWell(
-                onTap: (){
-                  pushToNewRoute(context, SubjectDetail(list[index], (){}));
-                },
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 12,right: 12,top: 8,bottom: 8),
-                  child: Container(
-                    height: 50,
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                      color: Colours.listBackground,
-                      borderRadius: BorderRadius.circular(6),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.4),
-                          spreadRadius: 2,
-                          blurRadius: 3,
-                          offset: const Offset(0, 2), // changes position of shadow
-                        ),
-                      ],
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 8.0, right: 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 4.0),
-                            child: Text(list[index].name, style: Styles.textWith14withBold(Colours.black)),
-                          ),
-                          Icon(Icons.arrow_circle_right_outlined, color: Colours.buttonColor2, size: 20,)
-                        ],
+            return InkWell(
+              onTap: (){
+                pushToNewRoute(context, SubjectDetail(list[index], (){}));
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(left: 12,right: 12,top: 8,bottom: 8),
+                child: Container(
+                  height: 50,
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    color: Colours.listBackground,
+                    borderRadius: BorderRadius.circular(6),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.shade300,
+                        spreadRadius: 0,
+                        blurRadius: 0,
+                        offset: const Offset(0, 2), // changes position of shadow
                       ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8.0, right: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 12.0),
+                          child: Text(list[index].name, style: Styles.textWith14withBold(Colours.black)),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 12.0),
+                          child: Icon(Icons.arrow_circle_right_outlined, color: Colours.buttonColor2, size: 20,),
+                        )
+                      ],
                     ),
                   ),
                 ),
-              );
-            }else{
-              if (!isPrimeUser && (index + 1) % (Common.adDisplayInterval + 1) == 0) {
-                // Ads are available, show the ad widget after every specified interval
-                return const BannerAdWidget();
-              } else {
-                // Adjusted index to account for the inserted widgets
-                final adjustedIndex = !isPrimeUser ? index - (index ~/ (Common.adDisplayInterval + 1)) : index;
-                return InkWell(
-                  onTap: (){
-                    pushToNewRoute(context, SubjectDetail(list[adjustedIndex], (){}));
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 12,right: 12,top: 8,bottom: 8),
-                    child: Container(
-                      height: 50,
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                        color: Colours.listBackground,
-                        borderRadius: BorderRadius.circular(6),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.4),
-                            spreadRadius: 2,
-                            blurRadius: 3,
-                            offset: const Offset(0, 2), // changes position of shadow
-                          ),
-                        ],
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 8.0, right: 8),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(left: 4.0),
-                              child: Text(list[adjustedIndex].name, style: Styles.textWith14withBold(Colours.black)),
-                            ),
-                            Icon(Icons.arrow_circle_right_outlined, color: Colours.buttonColor2, size: 20,)
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              }
-            }
+              ),
+            );
           },
         ),
       )

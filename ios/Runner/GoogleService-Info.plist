@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>735367481552-59c43tob8l8f7tbt55it25knrm6re5g7.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.735367481552-59c43tob8l8f7tbt55it25knrm6re5g7</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>735367481552-25dee3hqtfnaiatdhis3u06eh2go6b9g.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDuj5ifJtR9DOyArGYdhPewhATJy9YPBbM</string>
+	<key>GCM_SENDER_ID</key>
+	<string>735367481552</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.mathsformulas.app</string>
+	<key>PROJECT_ID</key>
+	<string>formula-f5df4</string>
+	<key>STORAGE_BUCKET</key>
+	<string>formula-f5df4.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:735367481552:ios:ab81300fb684ade275b6d5</string>
+</dict>
+</plist>
