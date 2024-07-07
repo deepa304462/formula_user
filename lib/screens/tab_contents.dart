@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/content_model.dart';
 import '../models/tab_model.dart';
@@ -98,18 +101,47 @@ class _TabContentsState extends State<TabContents> {
 
     list = [];
     CollectionReference formulacontent =
-        FirebaseFirestore.instance.collection('formulacontent');
+    FirebaseFirestore.instance.collection('formulacontent');
+    final prefs = await SharedPreferences.getInstance();
+    final cacheKey = 'formulacontent_${widget.currentTab.id}';
+    final cacheTimestampKey = '${cacheKey}_timestamp';
 
     try {
-      QuerySnapshot querySnapshot = await formulacontent
-          .where("tabId", isEqualTo: widget.currentTab.id.toString())
-          .get();
+      // Fetch cached data and timestamp
+      String? cachedData = prefs.getString(cacheKey);
+      int? cacheTimestamp = prefs.getInt(cacheTimestampKey);
 
-      if (querySnapshot.docs.isNotEmpty) {
-        for (var doc in querySnapshot.docs) {
-          final contentModel =
-              ContentModel.fromJson(doc.data() as Map<String, dynamic>);
-          list.add(contentModel);
+      bool shouldFetchFromFirestore = true;
+      const cacheDuration = Duration(hours: 1); // Set your refresh interval here
+
+      if (cacheTimestamp != null) {
+        final cacheDateTime = DateTime.fromMillisecondsSinceEpoch(cacheTimestamp);
+        if (DateTime.now().difference(cacheDateTime) < cacheDuration) {
+          shouldFetchFromFirestore = false;
+        }
+      }
+
+      if (!shouldFetchFromFirestore && cachedData != null) {
+        // Load data from cache
+        List<dynamic> jsonData = json.decode(cachedData);
+        list = jsonData.map((item) => ContentModel.fromJson(item)).toList();
+      } else {
+        // Fetch data from Firestore
+        QuerySnapshot querySnapshot = await formulacontent
+            .where("tabId", isEqualTo: widget.currentTab.id.toString())
+            .get();
+
+        if (querySnapshot.docs.isNotEmpty) {
+          for (var doc in querySnapshot.docs) {
+            final contentModel =
+            ContentModel.fromJson(doc.data() as Map<String, dynamic>);
+            list.add(contentModel);
+          }
+
+          // Save fetched data and timestamp to cache
+          String jsonData = json.encode(list.map((item) => item.toJson()).toList());
+          await prefs.setString(cacheKey, jsonData);
+          await prefs.setInt(cacheTimestampKey, DateTime.now().millisecondsSinceEpoch);
         }
       }
 
@@ -117,8 +149,6 @@ class _TabContentsState extends State<TabContents> {
       print('Before sorting: $list');
 
       list.sort((a, b) => a.index.compareTo(b.index));
-
-      //list[0].isExpanded = true;
 
       // Debugging: Print contents of list after sorting
       print('After sorting: $list');

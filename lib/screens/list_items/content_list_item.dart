@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -10,6 +9,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:formula_user/models/content_item_model.dart';
+import 'package:formula_user/res/common.dart';
 import 'package:formula_user/res/db_helper.dart';
 import 'package:image/image.dart' as img;
 import 'package:path_provider/path_provider.dart';
@@ -46,7 +46,10 @@ class _ContentListItemState extends State<ContentListItem> {
   void initState() {
     super.initState();
     checkIfBookMark();
-    _loadRewardedAd();
+    if(Common.isAdEnable){
+      _loadRewardedAd();
+    }
+
 
   }
 

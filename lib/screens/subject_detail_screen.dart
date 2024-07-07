@@ -1,7 +1,10 @@
 
 
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/content_model.dart';
 import '../models/tab_model.dart';
@@ -100,6 +103,9 @@ class _SubjectDetailState extends State<SubjectDetail> {
     );
   }
 
+// Add this inside your class
+  static const cacheDuration = Duration(hours: 1); // Set your refresh interval here
+
   Future<void> getContentData() async {
     setState(() {
       _isLoading = true;
@@ -107,23 +113,49 @@ class _SubjectDetailState extends State<SubjectDetail> {
 
     list = [];
     CollectionReference formulacontent = FirebaseFirestore.instance.collection('formulacontent');
+    final prefs = await SharedPreferences.getInstance();
+    final cacheKey = 'formulacontent_${widget.currentTab.id}';
+    final cacheTimestampKey = '${cacheKey}_timestamp';
 
     try {
-      QuerySnapshot querySnapshot = await formulacontent.where("tabId", isEqualTo: widget.currentTab.id.toString()).get();
+      // Fetch cached data and timestamp
+      String? cachedData = prefs.getString(cacheKey);
+      int? cacheTimestamp = prefs.getInt(cacheTimestampKey);
 
-      if (querySnapshot.docs.isNotEmpty) {
-        for (var doc in querySnapshot.docs) {
-          final contentModel = ContentModel.fromJson(doc.data() as Map<String, dynamic>);
-          list.add(contentModel);
+      bool shouldFetchFromFirestore = true;
+      if (cacheTimestamp != null) {
+        final cacheDateTime = DateTime.fromMillisecondsSinceEpoch(cacheTimestamp);
+        if (DateTime.now().difference(cacheDateTime) < cacheDuration) {
+          shouldFetchFromFirestore = false;
         }
       }
 
-      // Debugging: Print contents of list before sorting
-      print('Before sorting: $list');
+      if (!shouldFetchFromFirestore && cachedData != null) {
+        // Load data from cache
+        List<dynamic> jsonData = json.decode(cachedData);
+        list = jsonData.map((item) => ContentModel.fromJson(item)).toList();
+      } else {
+        // Fetch data from Firestore
+        QuerySnapshot querySnapshot = await formulacontent.where("tabId", isEqualTo: widget.currentTab.id.toString()).get();
 
+        if (querySnapshot.docs.isNotEmpty) {
+          for (var doc in querySnapshot.docs) {
+            final contentModel = ContentModel.fromJson(doc.data() as Map<String, dynamic>);
+            list.add(contentModel);
+          }
+
+          // Save fetched data and timestamp to cache
+          String jsonData = json.encode(list.map((item) => item.toJson()).toList());
+          await prefs.setString(cacheKey, jsonData);
+          await prefs.setInt(cacheTimestampKey, DateTime.now().millisecondsSinceEpoch);
+        }
+      }
+
+      // Sort the list
       list.sort((a, b) => a.index.compareTo(b.index));
 
-      // Debugging: Print contents of list after sorting
+      // Debugging: Print contents of list before sorting
+      print('Before sorting: $list');
       print('After sorting: $list');
     } catch (e) {
       print("Error fetching content data: $e");
@@ -135,27 +167,5 @@ class _SubjectDetailState extends State<SubjectDetail> {
     });
   }
 
-  void handleClick(String v, ContentModel item) {
-    if (v == 'Add Formula') {
-      pushToNewRoute(context, AddContentItemScreen(item));
-    } else if (v == 'Edit Content') {
-      pushToNewRoute(context, EditContentScreen(item));
-    } else {
-      deleteContent(item);
-    }
-  }
-
-  void deleteContent(ContentModel item) {
-    // Reference to the document you want to delete
-    DocumentReference documentRef = FirebaseFirestore.instance.collection('formulacontent').doc(item.id);
-
-    // Delete the document
-    documentRef
-        .delete()
-        .then((value) {
-      widget.function();
-    })
-        .catchError((error) => print('Failed to delete document: $error'));
-  }
 }
 

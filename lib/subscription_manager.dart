@@ -29,9 +29,7 @@ class SubscriptionManager extends ChangeNotifier {
       await FirebaseFirestore.instance.collection('settings').doc('general').get();
       if (settingsDoc.exists) {
         Common.adDisplayInterval = settingsDoc['adDisplayInterval'] ?? adDisplayInterval;
-        print("Common.adDisplayInterval");
-        print(Common.adDisplayInterval);
-        print("Common.adDisplayInterval");
+        Common.isAdEnable = settingsDoc['isAdEnable'] ?? false;
         notifyListeners();
       }
     } catch (error) {
@@ -98,7 +96,12 @@ class SubscriptionManager extends ChangeNotifier {
   }
 
   bool isPrimeMember(BuildContext context) {
-    return Provider.of<SubscriptionManager>(context).isPrime;
+    if(Common.isAdEnable){
+      return Provider.of<SubscriptionManager>(context).isPrime;
+    }else{
+      return false;
+    }
+
   }
 
   setPrimeManual(bool isPrime) {

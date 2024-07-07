@@ -1,9 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:formula_user/res/styles.dart';
-
+import 'package:package_info_plus/package_info_plus.dart';
 import '../res/colours.dart';
 
-class AboutScreen extends StatelessWidget {
+class AboutScreen extends StatefulWidget {
+  const AboutScreen({super.key});
+
+  @override
+  State<AboutScreen> createState() => _AboutScreenState();
+}
+
+class _AboutScreenState extends State<AboutScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    getVersion();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +36,7 @@ class AboutScreen extends StatelessWidget {
                 'Mathematics Formula App',
                 style: Styles.textWith24withBold(Colours.black)
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Text(
                 'Description:',
                 style: Styles.textWith18withBold(Colours.black)
@@ -31,14 +45,14 @@ class AboutScreen extends StatelessWidget {
                 'Your app description goes here. Explain what your app does and how it can help users with mathematical formulas.',
                 style: Styles.textWith16(Colours.black),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Text(
                 'Features:',
                 style: Styles.textWith18withBold(Colours.black)
               ),
               RichText(
                 text: TextSpan(
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16,
                     color: Colors.black,
                   ),
@@ -60,7 +74,7 @@ class AboutScreen extends StatelessWidget {
               ),
               RichText(
                 text: TextSpan(
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16,
                     color: Colors.black,
                   ),
@@ -82,29 +96,7 @@ class AboutScreen extends StatelessWidget {
               ),
               RichText(
                 text: TextSpan(
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.black,
-                  ),
-                  children: [
-                    TextSpan(
-                        text: '3. ',
-                        style: Styles.textWith16bold(Colors.black)
-                    ),
-                    TextSpan(
-                        text: 'Ad-Free Subscription:',
-                        style: Styles.textWith16bold(Colors.blue)
-                    ),
-                    TextSpan(
-                        text: 'Users have the option to subscribe to a premium version of the app to remove ads and enjoy an uninterrupted experience.',
-                        style: Styles.textWith16(Colours.black)
-                    ),
-                  ],
-                ),
-              ),
-              RichText(
-                text: TextSpan(
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16,
                     color: Colors.black,
                   ),
@@ -124,30 +116,10 @@ class AboutScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: 16),
-             /* RichText(
-                text: TextSpan(
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.black,
-                  ),
-                  children: [
-                    TextSpan(
-                        text: 'Contact: ',
-                        style: Styles.textWith16bold(Colors.black)
-                    ),
-
-                    TextSpan(
-                        text: 'thelightspeedofficial@gmail.com',
-                        style: Styles.textWithUnderLine(Colors.blue)
-                    ),
-                  ],
-                ),
-              ),*/
-
-              SizedBox(height: 16),
-              Text(
-                'Version: 1.0.2',
+              const SizedBox(height: 16),
+              const SizedBox(height: 16),
+               Text(
+                'Version: $version',
                 style: TextStyle(
                   fontStyle: FontStyle.italic,
                 ),
@@ -157,5 +129,21 @@ class AboutScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+  String appName = "";
+  String packageName  = "";
+  String version = "";
+  String buildNumber = "";
+
+  Future<void> getVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+     appName = packageInfo.appName;
+     packageName = packageInfo.packageName;
+     version = packageInfo.version;
+     buildNumber = packageInfo.buildNumber;
+     setState(() {
+
+     });
   }
 }

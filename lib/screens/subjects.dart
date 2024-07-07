@@ -1,10 +1,13 @@
 
 
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:formula_user/screens/subject_detail_screen.dart';
 import 'package:formula_user/utilities.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/tab_model.dart';
 import '../res/ads.dart';
 import '../res/colours.dart';
@@ -98,28 +101,63 @@ class _SubjectsState extends State<Subjects> {
     );
   }
 
+  // Add this inside your class
+  static const cacheDuration = Duration(hours: 1); // Set your refresh interval here
+
   Future<void> getData() async {
     setState(() {
       _isLoading = true;
     });
-    CollectionReference formulatab =
-    FirebaseFirestore.instance.collection('formulatab');
-    QuerySnapshot querySnapshot = await formulatab.get();
 
-    if (querySnapshot.docs.isNotEmpty) {
-      list = querySnapshot.docs
-          .map((doc) => TabModel.fromJson(doc.data() as Map<String, dynamic>))
-          .toList();
+    CollectionReference formulatab = FirebaseFirestore.instance.collection('formulatab');
+    final prefs = await SharedPreferences.getInstance();
+    final cacheKey = 'formulatab';
+    final cacheTimestampKey = '${cacheKey}_timestamp';
+
+    try {
+      // Fetch cached data and timestamp
+      String? cachedData = prefs.getString(cacheKey);
+      int? cacheTimestamp = prefs.getInt(cacheTimestampKey);
+
+      bool shouldFetchFromFirestore = true;
+      if (cacheTimestamp != null) {
+        final cacheDateTime = DateTime.fromMillisecondsSinceEpoch(cacheTimestamp);
+        if (DateTime.now().difference(cacheDateTime) < cacheDuration) {
+          shouldFetchFromFirestore = false;
+        }
+      }
+
+      if (!shouldFetchFromFirestore && cachedData != null) {
+        // Load data from cache
+        List<dynamic> jsonData = json.decode(cachedData);
+        list = jsonData.map((item) => TabModel.fromJson(item)).toList();
+      } else {
+        // Fetch data from Firestore
+        QuerySnapshot querySnapshot = await formulatab.get(const GetOptions(source: Source.serverAndCache));
+
+        if (querySnapshot.docs.isNotEmpty) {
+          list = querySnapshot.docs
+              .map((doc) => TabModel.fromJson(doc.data() as Map<String, dynamic>))
+              .toList();
+
+          // Save fetched data and timestamp to cache
+          String jsonData = json.encode(list.map((item) => item.toJson()).toList());
+          await prefs.setString(cacheKey, jsonData);
+          await prefs.setInt(cacheTimestampKey, DateTime.now().millisecondsSinceEpoch);
+        } else {
+          list.add(TabModel("No Tab", "0", 0));
+        }
+      }
+
+      // Sort the list
       list.sort((a, b) => a.index.compareTo(b.index));
-      setState(() {
-        _isLoading = false;
-      });
-    } else {
-      list.add(TabModel("No Tab", "0", 0));
-      setState(() {
-        _isLoading = false;
-      });
+    } catch (e) {
+      print("Error fetching tab data: $e");
     }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
 }

@@ -17,7 +17,9 @@ final serviceLocator = GetIt.instance;
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp(
+    name: "Formula_user",
+      options: DefaultFirebaseOptions.currentPlatform);
   MobileAds.instance.initialize();
   runApp(ChangeNotifierProvider(
     create: (context) => SubscriptionManager(),
@@ -44,7 +46,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     _controller = VideoPlayerController.asset("assets/splash_video.mp4",);
     _controller.initialize().then((_) {
-      _controller.setLooping(true);
+      _controller.setLooping(false);
       Timer(const Duration(seconds: 0), () {
         setState(() {
           _controller.play();
