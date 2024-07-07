@@ -129,7 +129,9 @@ class _TabContentsState extends State<TabContents> {
         // Fetch data from Firestore
         QuerySnapshot querySnapshot = await formulacontent
             .where("tabId", isEqualTo: widget.currentTab.id.toString())
-            .get();
+            .get(const GetOptions(
+            source: Source.serverAndCache
+        ));
 
         if (querySnapshot.docs.isNotEmpty) {
           for (var doc in querySnapshot.docs) {

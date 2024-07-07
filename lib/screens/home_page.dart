@@ -40,7 +40,7 @@ class _HomePageState extends State<HomePage>
   void initState() {
     super.initState();
     getData(); // Start fetching data
-    if(Common.isAdEnable){
+    if (Common.isAdEnable) {
       MobileAds.instance.updateRequestConfiguration(
           RequestConfiguration(testDeviceIds: [testDevice]));
     }
@@ -51,51 +51,53 @@ class _HomePageState extends State<HomePage>
       _isLoading = true;
     });
 
-    CollectionReference formulatab = FirebaseFirestore.instance.collection('formulatab');
+    CollectionReference formulatab =
+        FirebaseFirestore.instance.collection('formulatab');
     final prefs = await SharedPreferences.getInstance();
     const cacheKey = 'formulatab_cache';
-    const cacheTimestampKey = '${cacheKey}_timestamp';
 
     try {
-      // Fetch cached data and timestamp
+      // Fetch cached data
       String? cachedData = prefs.getString(cacheKey);
-      int? cacheTimestamp = prefs.getInt(cacheTimestampKey);
 
-      bool shouldFetchFromFirestore = true;
-      const cacheDuration = Duration(hours: 1); // Set your refresh interval here
-
-      if (cacheTimestamp != null) {
-        final cacheDateTime = DateTime.fromMillisecondsSinceEpoch(cacheTimestamp);
-        if (DateTime.now().difference(cacheDateTime) < cacheDuration) {
-          shouldFetchFromFirestore = false;
-        }
-      }
-
-      if (!shouldFetchFromFirestore && cachedData != null) {
+      if (cachedData != null) {
         // Load data from cache
         List<dynamic> jsonData = json.decode(cachedData);
         list = jsonData.map((item) => TabModel.fromJson(item)).toList();
-      } else {
-        // Fetch data from Firestore
-        QuerySnapshot querySnapshot = await formulatab.get();
-
-        if (querySnapshot.docs.isNotEmpty) {
-          list = querySnapshot.docs
-              .map((doc) => TabModel.fromJson(doc.data() as Map<String, dynamic>))
-              .toList();
-          list.sort((a, b) => a.index.compareTo(b.index));
-
-          // Save fetched data and timestamp to cache
-          String jsonData = json.encode(list.map((item) => item.toJson()).toList());
-          await prefs.setString(cacheKey, jsonData);
-          await prefs.setInt(cacheTimestampKey, DateTime.now().millisecondsSinceEpoch);
-        } else {
-          list.add(TabModel("No Tab", "0", 0));
-        }
+        // Initialize TabController with cached data
+        _tabController = TabController(length: list.length, vsync: this);
       }
 
-      // Initialize TabController
-      _tabController = TabController(length: list.length, vsync: this);
+      // Fetch data from Firestore
+      QuerySnapshot querySnapshot =
+          await formulatab.get(const GetOptions(source: Source.serverAndCache));
+
+      if (querySnapshot.docs.isNotEmpty) {
+        List<TabModel> newList = querySnapshot.docs
+            .map((doc) => TabModel.fromJson(doc.data() as Map<String, dynamic>))
+            .toList();
+        newList.sort((a, b) => a.index.compareTo(b.index));
+
+        // Check if new data is different from cached data
+        String newJsonData =
+            json.encode(newList.map((item) => item.toJson()).toList());
+        if (newJsonData != cachedData) {
+          // Update list with new data
+          list = newList;
+
+          // Initialize TabController with new data
+          _tabController = TabController(length: list.length, vsync: this);
+
+          // Save fetched data to cache
+          await prefs.setString(cacheKey, newJsonData);
+        }
+      } else {
+        list.add(TabModel("No Tab", "0", 0));
+      }
+
+      // Sort the list
+      list.sort((a, b) => a.index.compareTo(b.index));
+      // Update the UI with cached data
       setState(() {
         _isLoading = false;
       });
@@ -130,16 +132,17 @@ class _HomePageState extends State<HomePage>
         ),
         backgroundColor: Colours.buttonColor2,
         actions: [
-          Common.isAdEnable ?
-          IconButton(
-            icon: Image.asset(
-              'assets/prime.png',
-              color: Colors.white,
-            ),
-            onPressed: () {
-              pushToNewRoute(context,  const SubscriptionPurchaseScreen());
-            },
-          ) : Container(),
+          Common.isAdEnable
+              ? IconButton(
+                  icon: Image.asset(
+                    'assets/prime.png',
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    pushToNewRoute(context, const SubscriptionPurchaseScreen());
+                  },
+                )
+              : Container(),
           Common.isLogin
               ? IconButton(
                   icon: Icon(Icons.logout, color: Colours.white),
@@ -170,7 +173,7 @@ class _HomePageState extends State<HomePage>
                               top: 8.0, left: 6.0, right: 6.0),
                           child: InkWell(
                             onTap: () {
-                              pushToNewRoute(context,  SearchBarScreen());
+                              pushToNewRoute(context, SearchBarScreen());
                             },
                             child: Container(
                               height: 38,
@@ -211,7 +214,8 @@ class _HomePageState extends State<HomePage>
                                 labelStyle: Styles.textWith14withBold(
                                     Colours.buttonColor2),
                                 indicatorColor: Colors.pinkAccent,
-                                indicatorPadding: const EdgeInsets.only(left: 20.0),
+                                indicatorPadding:
+                                    const EdgeInsets.only(left: 20.0),
                                 indicatorSize: TabBarIndicatorSize.tab,
                                 indicator: MaterialIndicator(
                                   color: Colors.pinkAccent,
@@ -219,7 +223,8 @@ class _HomePageState extends State<HomePage>
                                   bottomLeftRadius: 5,
                                   bottomRightRadius: 5,
                                 ),
-                                labelPadding: const EdgeInsets.only(right: 10.0,left: 10.0),
+                                labelPadding: const EdgeInsets.only(
+                                    right: 10.0, left: 10.0),
                                 tabs: List.generate(
                                     list.length,
                                     (index) => Row(

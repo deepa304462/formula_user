@@ -149,7 +149,9 @@ class _LoginPageState extends State<LoginPage> {
   Future<bool> userExists(UserModel user) async {
     try {
       CollectionReference users = FirebaseFirestore.instance.collection('users');
-      DocumentSnapshot doc = await users.doc(user.id).get();
+      DocumentSnapshot doc = await users.doc(user.id).get(const GetOptions(
+          source: Source.serverAndCache
+      ));
       return doc.exists;
     } catch (e) {
       print('Error checking user existence: $e');

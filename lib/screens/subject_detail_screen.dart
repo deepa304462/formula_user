@@ -115,57 +115,67 @@ class _SubjectDetailState extends State<SubjectDetail> {
     CollectionReference formulacontent = FirebaseFirestore.instance.collection('formulacontent');
     final prefs = await SharedPreferences.getInstance();
     final cacheKey = 'formulacontent_${widget.currentTab.id}';
-    final cacheTimestampKey = '${cacheKey}_timestamp';
 
     try {
-      // Fetch cached data and timestamp
+      // Fetch cached data
       String? cachedData = prefs.getString(cacheKey);
-      int? cacheTimestamp = prefs.getInt(cacheTimestampKey);
 
-      bool shouldFetchFromFirestore = true;
-      if (cacheTimestamp != null) {
-        final cacheDateTime = DateTime.fromMillisecondsSinceEpoch(cacheTimestamp);
-        if (DateTime.now().difference(cacheDateTime) < cacheDuration) {
-          shouldFetchFromFirestore = false;
-        }
-      }
-
-      if (!shouldFetchFromFirestore && cachedData != null) {
+      if (cachedData != null) {
         // Load data from cache
         List<dynamic> jsonData = json.decode(cachedData);
         list = jsonData.map((item) => ContentModel.fromJson(item)).toList();
-      } else {
-        // Fetch data from Firestore
-        QuerySnapshot querySnapshot = await formulacontent.where("tabId", isEqualTo: widget.currentTab.id.toString()).get();
 
-        if (querySnapshot.docs.isNotEmpty) {
-          for (var doc in querySnapshot.docs) {
-            final contentModel = ContentModel.fromJson(doc.data() as Map<String, dynamic>);
-            list.add(contentModel);
-          }
+      }
 
-          // Save fetched data and timestamp to cache
-          String jsonData = json.encode(list.map((item) => item.toJson()).toList());
-          await prefs.setString(cacheKey, jsonData);
-          await prefs.setInt(cacheTimestampKey, DateTime.now().millisecondsSinceEpoch);
+      // Fetch data from Firestore
+      QuerySnapshot querySnapshot = await formulacontent
+          .where("tabId", isEqualTo: widget.currentTab.id.toString())
+          .get(const GetOptions(source: Source.serverAndCache));
+
+      if (querySnapshot.docs.isNotEmpty) {
+        List<ContentModel> newList = querySnapshot.docs
+            .map((doc) => ContentModel.fromJson(doc.data() as Map<String, dynamic>))
+            .toList();
+
+        // Sort the new data
+        newList.sort((a, b) => a.index.compareTo(b.index));
+
+        // Check if new data is different from cached data
+        String newJsonData = json.encode(newList.map((item) => item.toJson()).toList());
+        if (newJsonData != cachedData) {
+          // Update list with new data
+          list = newList;
+
+          // Save fetched data to cache
+          await prefs.setString(cacheKey, newJsonData);
         }
+      } else {
+        list.add(ContentModel("No Content", "0", "0", 0));
+
       }
 
       // Sort the list
       list.sort((a, b) => a.index.compareTo(b.index));
-
+      // Update the UI with cached data
+      setState(() {
+        _isLoading = false;
+      });
       // Debugging: Print contents of list before sorting
       print('Before sorting: $list');
       print('After sorting: $list');
     } catch (e) {
       print("Error fetching content data: $e");
+      setState(() {
+        _isLoading = false;
+      });
     }
 
+    // Update the UI
     setState(() {
-      _isLoading = false;
       print("list.length: ${list.length}");
     });
   }
+
 
 }
 

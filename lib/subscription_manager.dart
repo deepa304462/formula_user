@@ -26,7 +26,9 @@ class SubscriptionManager extends ChangeNotifier {
   Future<void> fetchSettingsFromFirestore() async {
     try {
       DocumentSnapshot settingsDoc =
-      await FirebaseFirestore.instance.collection('settings').doc('general').get();
+      await FirebaseFirestore.instance.collection('settings').doc('general').get(const GetOptions(
+          source: Source.serverAndCache
+        ));
       if (settingsDoc.exists) {
         Common.adDisplayInterval = settingsDoc['adDisplayInterval'] ?? adDisplayInterval;
         Common.isAdEnable = settingsDoc['isAdEnable'] ?? false;
@@ -99,7 +101,7 @@ class SubscriptionManager extends ChangeNotifier {
     if(Common.isAdEnable){
       return Provider.of<SubscriptionManager>(context).isPrime;
     }else{
-      return false;
+      return true;
     }
 
   }
@@ -129,7 +131,9 @@ class SubscriptionManager extends ChangeNotifier {
         FirebaseFirestore.instance.collection('subscriptions');
 
     try {
-      QuerySnapshot querySnapshot = await subscriptionRef.get();
+      QuerySnapshot querySnapshot = await subscriptionRef.get(const GetOptions(
+          source: Source.serverAndCache
+        ));;
 
       if (querySnapshot.docs.isNotEmpty) {
         for (var doc in querySnapshot.docs) {

@@ -22,6 +22,8 @@ import '../../models/favorite_model.dart';
 import '../../res/colours.dart';
 import '../../res/styles.dart';
 import '../../subscription_manager.dart';
+import '../image_builders/cache_image_builder.dart';
+import '../image_builders/network_image_builder.dart';
 
 class ContentListItem extends StatefulWidget {
   ContentItemModel contentItemModel;
@@ -41,21 +43,19 @@ class _ContentListItemState extends State<ContentListItem> {
       ? 'ca-app-pub-3940256099942544/5224354917'
       : 'ca-app-pub-3940256099942544/1712485313';
 
-
   @override
   void initState() {
     super.initState();
     checkIfBookMark();
-    if(Common.isAdEnable){
+    if (Common.isAdEnable) {
       _loadRewardedAd();
     }
-
-
   }
 
   @override
   Widget build(BuildContext context) {
-    bool isPrimeMember = Provider.of<SubscriptionManager>(context).isPrimeMember(context);
+    bool isPrimeMember =
+        Provider.of<SubscriptionManager>(context).isPrimeMember(context);
     return RepaintBoundary(
       key: scaffoldKey,
       child: Padding(
@@ -70,12 +70,13 @@ class _ContentListItemState extends State<ContentListItem> {
                       topLeft: Radius.circular(16),
                       topRight: Radius.circular(16))),
               child: Padding(
-                padding: const EdgeInsets.only(left: 6.0,right: 6.0),
+                padding: const EdgeInsets.only(left: 6.0, right: 6.0),
                 child: Row(
                   children: [
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 12.0, top: 6.0,bottom: 6.0),
+                        padding: const EdgeInsets.only(
+                            left: 12.0, top: 6.0, bottom: 6.0),
                         child: Text(
                           widget.contentItemModel.title,
                           style: Styles.textWith16(Colours.appbar),
@@ -84,14 +85,15 @@ class _ContentListItemState extends State<ContentListItem> {
                     ),
                     InkWell(
                       onTap: () {
-                        if(isPrimeMember){
+                        if (isPrimeMember) {
                           _addToBookmarks();
-                        }else{
+                        } else {
                           if (_rewardedAd != null) {
                             _showRewardedAd();
                           } else {
                             _addToBookmarks();
-                            print('Rewarded ad not available yet. Please try again later.');
+                            print(
+                                'Rewarded ad not available yet. Please try again later.');
                             // Alternatively, you can call _addToBookmarks() directly here if rewarded ad is not available
                           }
                         }
@@ -105,21 +107,26 @@ class _ContentListItemState extends State<ContentListItem> {
                         color: Colours.white,
                       ),
                     ),
-                    isShareLoading ? const SizedBox(
-                      height: 10,
-                        width: 10,
-                        child: CircularProgressIndicator()) : InkWell(
-                      onTap: () {
-                        SchedulerBinding.instance.addPostFrameCallback((_) {
-                          requestStoragePermission();
-                        });
-                      },
-                      child: Padding(
-                          padding:
-                          const EdgeInsets.only(left: 6.0, right: 8.0),
-                          child: SvgPicture.asset("assets/share_icon.svg",
-                              width: 28, height: 28, color: Colours.white)),
-                    ),
+                    isShareLoading
+                        ? const SizedBox(
+                            height: 10,
+                            width: 10,
+                            child: CircularProgressIndicator())
+                        : InkWell(
+                            onTap: () {
+                              SchedulerBinding.instance
+                                  .addPostFrameCallback((_) {
+                                requestStoragePermission();
+                              });
+                            },
+                            child: Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 6.0, right: 8.0),
+                                child: SvgPicture.asset("assets/share_icon.svg",
+                                    width: 28,
+                                    height: 28,
+                                    color: Colours.white)),
+                          ),
                   ],
                 ),
               ),
@@ -130,24 +137,22 @@ class _ContentListItemState extends State<ContentListItem> {
                         Border.all(color: Colours.itemCardBackground, width: 1),
                     borderRadius: const BorderRadius.only(
                         bottomLeft: Radius.circular(16),
-                        bottomRight: Radius.circular(16))
-                    // borderRadius: BorderRadius.circular(16)
-                    ),
+                        bottomRight: Radius.circular(16))),
                 child: ClipRRect(
                     borderRadius: const BorderRadius.only(
                         bottomRight: Radius.circular(16),
                         bottomLeft: Radius.circular(16)),
                     child: GestureDetector(
                         child: Container(
-                            decoration: BoxDecoration(color: Colours.white),
-                            child: CachedNetworkImage(
+                      decoration: BoxDecoration(color: Colours.white),
+                      child: isPrimeMember
+                          ? CachedImageBuilderWidget(
                               imageUrl: widget.contentItemModel.imageUrl,
-                              placeholder: (context, url) =>
-                                  Center(child: Image.asset('assets/loading_icon.gif',height: 150,width: 150,)),
-                              errorWidget:
-                                  (context, url, error) =>
-                                  Icon(Icons.error),
-                            ) ))))
+                            )
+                          : NetworkImageBuilderWidget(
+                              imageUrl: widget.contentItemModel.imageUrl,
+                            ),
+                    ))))
           ],
         ),
       ),
@@ -233,7 +238,6 @@ class _ContentListItemState extends State<ContentListItem> {
   }
 
   void requestStoragePermission() async {
-
     var status = await Permission.mediaLibrary.request();
     var status2 = await Permission.storage.request();
     if (status.isGranted || status2.isGranted) {
@@ -264,7 +268,6 @@ class _ContentListItemState extends State<ContentListItem> {
       openAppSettings();
     }
   }
-
 
   void _loadRewardedAd() {
     RewardedAd.load(
@@ -305,11 +308,9 @@ class _ContentListItemState extends State<ContentListItem> {
     });
   }
 
-
   void _addToBookmarks() {
     if (isInBookmark) {
-      widget.dbHelper!.deleteFromFavorite(
-          widget.contentItemModel.id);
+      widget.dbHelper!.deleteFromFavorite(widget.contentItemModel.id);
       setState(() {
         isInBookmark = false;
       });

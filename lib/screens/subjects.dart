@@ -101,9 +101,6 @@ class _SubjectsState extends State<Subjects> {
     );
   }
 
-  // Add this inside your class
-  static const cacheDuration = Duration(hours: 1); // Set your refresh interval here
-
   Future<void> getData() async {
     setState(() {
       _isLoading = true;
@@ -112,53 +109,55 @@ class _SubjectsState extends State<Subjects> {
     CollectionReference formulatab = FirebaseFirestore.instance.collection('formulatab');
     final prefs = await SharedPreferences.getInstance();
     final cacheKey = 'formulatab';
-    final cacheTimestampKey = '${cacheKey}_timestamp';
 
     try {
-      // Fetch cached data and timestamp
+      // Fetch cached data
       String? cachedData = prefs.getString(cacheKey);
-      int? cacheTimestamp = prefs.getInt(cacheTimestampKey);
 
-      bool shouldFetchFromFirestore = true;
-      if (cacheTimestamp != null) {
-        final cacheDateTime = DateTime.fromMillisecondsSinceEpoch(cacheTimestamp);
-        if (DateTime.now().difference(cacheDateTime) < cacheDuration) {
-          shouldFetchFromFirestore = false;
-        }
-      }
-
-      if (!shouldFetchFromFirestore && cachedData != null) {
+      if (cachedData != null) {
         // Load data from cache
         List<dynamic> jsonData = json.decode(cachedData);
         list = jsonData.map((item) => TabModel.fromJson(item)).toList();
-      } else {
-        // Fetch data from Firestore
-        QuerySnapshot querySnapshot = await formulatab.get(const GetOptions(source: Source.serverAndCache));
+      }
 
-        if (querySnapshot.docs.isNotEmpty) {
-          list = querySnapshot.docs
-              .map((doc) => TabModel.fromJson(doc.data() as Map<String, dynamic>))
-              .toList();
+      // Fetch data from Firestore
+      QuerySnapshot querySnapshot = await formulatab.get(const GetOptions(source: Source.serverAndCache));
 
-          // Save fetched data and timestamp to cache
-          String jsonData = json.encode(list.map((item) => item.toJson()).toList());
-          await prefs.setString(cacheKey, jsonData);
-          await prefs.setInt(cacheTimestampKey, DateTime.now().millisecondsSinceEpoch);
-        } else {
-          list.add(TabModel("No Tab", "0", 0));
+      if (querySnapshot.docs.isNotEmpty) {
+        List<TabModel> newList = querySnapshot.docs
+            .map((doc) => TabModel.fromJson(doc.data() as Map<String, dynamic>))
+            .toList();
+
+        // Sort the new data
+        newList.sort((a, b) => a.index.compareTo(b.index));
+
+        // Check if new data is different from cached data
+        String newJsonData = json.encode(newList.map((item) => item.toJson()).toList());
+        if (newJsonData != cachedData) {
+          // Update list with new data
+          list = newList;
+          // Save fetched data to cache
+          await prefs.setString(cacheKey, newJsonData);
         }
+      } else {
+        list.add(TabModel("No Tab", "0", 0));
+
       }
 
       // Sort the list
       list.sort((a, b) => a.index.compareTo(b.index));
+      // Update the UI with cached data
+      setState(() {
+        _isLoading = false;
+      });
     } catch (e) {
       print("Error fetching tab data: $e");
+      setState(() {
+        _isLoading = false;
+      });
     }
-
-    setState(() {
-      _isLoading = false;
-    });
   }
+
 
 }
 

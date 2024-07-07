@@ -124,7 +124,9 @@ class _SearchBarScreenState extends State<SearchBarScreen> {
         FirebaseFirestore.instance.collection('contentItem');
     final String lowercaseQuery = query.toLowerCase();
 
-    itemsCollection.get().then((querySnapshot) {
+    itemsCollection.get(const GetOptions(
+        source: Source.serverAndCache
+    )).then((querySnapshot) {
       setState(() {
         // Filter documents based on case-insensitive search
         searchResults = querySnapshot.docs
